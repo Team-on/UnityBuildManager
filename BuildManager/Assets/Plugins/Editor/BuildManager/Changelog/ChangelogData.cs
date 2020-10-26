@@ -8,37 +8,46 @@ public class ChangelogData {
 	public string updateName;
 
 	#region Serialization
-	public static ChangelogData LoadChangelogFromFile(string usedFileName) {
-		ChangelogData data;
-		string path = Path.Combine(Application.dataPath, usedFileName);
+	const string SAVE_FILE_NOREZ = "ChangelogSettings";
+	const string SAVE_FILE = "ChangelogSettings.json";
+	const string SAVE_FILE_EDITORPREFS = "ChangelogSettings.Save";
+	const string SAVE_FILE_EDITORPREFS_DEFAULT = "Plugins/Editor/BuildManager/Changelog/ChangelogSettings.json";
 
-		if (File.Exists(path)) {
-			string jsonString = null;
-
-			using (FileStream file = new FileStream(path, FileMode.Open, FileAccess.Read))
-				using (StreamReader sr = new StreamReader(file))
-					jsonString = sr.ReadToEnd();
-
-			data = JsonUtility.FromJson<ChangelogData>(jsonString);
-		}
-		else {
-			data = null;
+	public static void SaveChangelog(ChangelogData data) {
+		if (!PlayerPrefs.HasKey(SAVE_FILE_EDITORPREFS)) {
+			string[] allPath = AssetDatabase.FindAssets(SAVE_FILE_NOREZ);
+			if (allPath.Length != 0)
+				PlayerPrefs.SetString(SAVE_FILE_EDITORPREFS, AssetDatabase.GUIDToAssetPath(allPath[0]).Replace("Assets/", ""));
 		}
 
-		return data;
+		string savePath = Path.Combine(Application.dataPath, PlayerPrefs.GetString(SAVE_FILE_EDITORPREFS, SAVE_FILE_EDITORPREFS_DEFAULT));
+
+		string json = JsonUtility.ToJson(data, true);
+
+		if (!File.Exists(savePath)) {
+			FileInfo file = new FileInfo(savePath);
+			file.Directory.Create();
+		}
+
+		File.WriteAllText(savePath, json);
 	}
 
-	public static void SaveChangelogToFile(string usedFileName, ChangelogData data) {
-		string path = Path.Combine(Application.dataPath, usedFileName);
+	public static ChangelogData LoadChangelog() {
+		if (!PlayerPrefs.HasKey(SAVE_FILE_EDITORPREFS)) {
+			string[] allPath = AssetDatabase.FindAssets(SAVE_FILE_NOREZ);
+			if (allPath.Length != 0)
+				PlayerPrefs.SetString(SAVE_FILE_EDITORPREFS, AssetDatabase.GUIDToAssetPath(allPath[0]).Replace("Assets/", ""));
+		}
 
-		string jsonString = JsonUtility.ToJson(data, true);
+		string savePath = Path.Combine(Application.dataPath, PlayerPrefs.GetString(SAVE_FILE_EDITORPREFS, SAVE_FILE_EDITORPREFS_DEFAULT));
 
-		if (!File.Exists(path))
-			File.Create(path);
-
-		using (FileStream file = new FileStream(path, FileMode.Truncate, FileAccess.Write))
-			using (StreamWriter sw = new StreamWriter(file))
-				sw.Write(jsonString);
+		if (!File.Exists(savePath)) {
+			return new ChangelogData();
+		}
+		else {
+			string json = File.ReadAllText(savePath);
+			return JsonUtility.FromJson<ChangelogData>(json);
+		}
 	}
 	#endregion
 }
