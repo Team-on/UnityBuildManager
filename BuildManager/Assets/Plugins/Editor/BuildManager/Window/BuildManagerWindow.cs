@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEditor;
+using UnityEditorInternal;
 
 public class BuildManagerWindow : EditorWindow {
 	const string SETTINGS_DEFAULT_PATH = "Assets/Plugins/Editor/BuildManager/BuildManagerг/BuildSequences.asset"; //Need Assets in path, cuz used by AssetDatabase.CreateAsset
@@ -15,11 +16,14 @@ public class BuildManagerWindow : EditorWindow {
 	static Vector2 scrollPosSequence = Vector2.zero;
 	static bool zipFoldout = false;
 	static bool itchFoldout = false;
-	static InspectorList<BuildSequence> sequencesList;
-	static InspectorList<BuildData> buidsList;
+
+	static ReorderableList sequenceList;
+	static ReorderableList buildList;
 
 	[MenuItem("Window/Custom/Builds &b")]
 	public static void ShowWindow() {
+		sequenceList = null;
+		buildList = null;
 		EditorWindow.GetWindow(typeof(BuildManagerWindow), false, "Builds", true);
 
 		LoadSettings();
@@ -53,7 +57,15 @@ public class BuildManagerWindow : EditorWindow {
 	}
 
 	void DrawBuildButtons() {
-		if ((settings?.sequences?.Length ?? 0) != 0) {
+		if ((settings?.sequences?.Count ?? 0) != 0) {
+			int enabledSequence = 0;
+			foreach (var sequence in settings.sequences)
+				if(sequence.isEnabled)
+					++enabledSequence;
+
+			if (enabledSequence == 0)
+				return;
+			
 			EditorGUILayout.Space(20);
 			Color prevColor = GUI.backgroundColor;
 			GUI.backgroundColor = new Color(0.773f, 0.345098f, 0.345098f);
@@ -61,7 +73,7 @@ public class BuildManagerWindow : EditorWindow {
 			EditorGUILayout.LabelField("Start build sequence(they red not becouse error, but becouse build stuck your pc if you accidentaly press it)");
 			EditorGUILayout.LabelField("Don't forget to manually download new version of polyglot localization if you want to update it");
 			foreach (var sequence in settings.sequences) {
-				if (GUILayout.Button($"Build {sequence.editorName}")) {
+				if (sequence.isEnabled && GUILayout.Button($"Build {sequence.editorName}")) {
 					BuildManager.RunBuildSequnce(sequence, changelog);
 				}
 			}
@@ -98,62 +110,94 @@ public class BuildManagerWindow : EditorWindow {
 	}
 
 	void DrawSequenceList() {
-		settings.sequences = sequencesList.Show();
-		if (sequencesList?.Selected != null) {
-			sequencesList.Selected.editorName = EditorGUILayout.TextField("Sequence name", sequencesList.Selected.editorName);
-			sequencesList.Selected.itchGameLink = EditorGUILayout.TextField("Itch.io link", sequencesList.Selected.itchGameLink);
+		if (sequenceList == null) {
+			PredefinedBuildConfigs.Init();
+			sequenceList = BuildSequenceReordableList.Create(settings.sequences, OnSequenceAdd, "Builds sequences");
+			sequenceList.onSelectCallback += OnSequenceSelectionChanged;
+			sequenceList.index = 0;
+		}
+
+		sequenceList.DoLayoutList();
+
+		if (0 <= sequenceList.index && sequenceList.index < sequenceList.count) {
+			BuildSequence selected = settings.sequences[sequenceList.index];
+
+			//selected.editorName = EditorGUILayout.TextField("Sequence name", selected.editorName);
+			//selected.itchGameLink = EditorGUILayout.TextField("Itch.io link", selected.itchGameLink);
 		}
 	}
 
 	void DrawSelectedSequenceData() {
 		EditorGUILayout.Space(20);
-		sequencesList.Selected.builds = buidsList.Show();
-		if (buidsList?.Selected != null) {
-			SerializedObject obj = new SerializedObject(settings);
 
-			buidsList.Selected.isPassbyBuild = EditorGUILayout.Toggle("Is Passby build", buidsList.Selected.isPassbyBuild);
-			buidsList.Selected.outputRoot = EditorGUILayout.TextField("Output root", buidsList.Selected.outputRoot);
-			buidsList.Selected.middlePath = EditorGUILayout.TextField("Middle path", buidsList.Selected.middlePath);
-			buidsList.Selected.scriptingDefinySymbols = EditorGUILayout.TextField("Scripting Defines", buidsList.Selected.scriptingDefinySymbols);
-
-			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField("Build Target Group", GUILayout.MinWidth(0));
-			buidsList.Selected.targetGroup = (BuildTargetGroup)EditorGUILayout.EnumPopup(buidsList.Selected.targetGroup);
-			EditorGUILayout.EndHorizontal();
-
-			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField("Build Target", GUILayout.MinWidth(0));
-			buidsList.Selected.target = (BuildTarget)EditorGUILayout.EnumPopup(buidsList.Selected.target);
-			EditorGUILayout.EndHorizontal();
-
-			EditorGUILayout.BeginHorizontal();
-			EditorGUILayout.LabelField("Build Options", GUILayout.MinWidth(0));
-			buidsList.Selected.options = (BuildOptions)EditorGUILayout.EnumFlagsField(buidsList.Selected.options);
-			EditorGUILayout.EndHorizontal();
-			EditorGUILayout.Space(20);
-
-			buidsList.Selected.isVirtualRealitySupported = EditorGUILayout.Toggle("VR Supported", buidsList.Selected.isVirtualRealitySupported);
-
-			zipFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(zipFoldout, "7zip");
-			if (zipFoldout) {
-				++EditorGUI.indentLevel;
-				buidsList.Selected.needZip = EditorGUILayout.Toggle("Compress", buidsList.Selected.needZip);
-				buidsList.Selected.compressDirPath = EditorGUILayout.TextField("Dir path", buidsList.Selected.compressDirPath);
-				--EditorGUI.indentLevel;
-			}
-			EditorGUILayout.EndFoldoutHeaderGroup();
-
-			itchFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(itchFoldout, "itch.io");
-			if (itchFoldout) {
-				++EditorGUI.indentLevel;
-				buidsList.Selected.needItchPush = EditorGUILayout.Toggle("Push to itch.io", buidsList.Selected.needItchPush);
-				buidsList.Selected.itchDirPath = EditorGUILayout.TextField("Dir path", buidsList.Selected.itchDirPath);
-				buidsList.Selected.itchChannel = EditorGUILayout.TextField("Channel", buidsList.Selected.itchChannel);
-				buidsList.Selected.itchAddLastChangelogUpdateNameToVerison = EditorGUILayout.Toggle("Add Changelog Update Name To Verison", buidsList.Selected.itchAddLastChangelogUpdateNameToVerison);
-				--EditorGUI.indentLevel;
-			}
-			EditorGUILayout.EndFoldoutHeaderGroup();
+		if (sequenceList.index < 0 || sequenceList.index >= settings.sequences.Count) {
+			buildList = null;
+			return;
 		}
+
+		if (buildList == null) {
+			buildList = BuildDataReordableList.Create(settings.sequences[sequenceList.index].builds, OnBuildAdd, "Builds");
+			buildList.onSelectCallback += OnBuildSelectionChanged; ;
+			buildList.index = 0;
+		}
+
+		buildList.DoLayoutList();
+
+		if (buildList.index < 0 || buildList.index >= settings.sequences[sequenceList.index].builds.Count)
+			return;
+
+		BuildData selected = settings.sequences[sequenceList.index].builds[buildList.index];
+
+		SerializedObject obj = new SerializedObject(settings);
+
+		selected.isPassbyBuild = EditorGUILayout.Toggle("Is Passby build", selected.isPassbyBuild);
+		selected.isVirtualRealitySupported = EditorGUILayout.Toggle("VR Supported", selected.isVirtualRealitySupported);
+
+		EditorGUILayout.Space(20);
+		selected.outputRoot = EditorGUILayout.TextField("Output root", selected.outputRoot);
+		selected.middlePath = EditorGUILayout.TextField("Middle path", selected.middlePath);
+
+		EditorGUILayout.Space(20);
+		selected.scriptingDefineSymbols = EditorGUILayout.TextField("Scripting Defines", selected.scriptingDefineSymbols);
+
+		//EditorGUILayout.BeginHorizontal();
+		//EditorGUILayout.LabelField("Build Target Group", GUILayout.MinWidth(0));
+		//selected.targetGroup = (BuildTargetGroup)EditorGUILayout.EnumPopup(selected.targetGroup);
+		//EditorGUILayout.EndHorizontal();
+
+		//EditorGUILayout.BeginHorizontal();
+		//EditorGUILayout.LabelField("Build Target", GUILayout.MinWidth(0));
+		//selected.target = (BuildTarget)EditorGUILayout.EnumPopup(selected.target);
+		//EditorGUILayout.EndHorizontal();
+
+		//EditorGUILayout.BeginHorizontal();
+		//EditorGUILayout.LabelField("Build Options", GUILayout.MinWidth(0));
+		//selected.options = (BuildOptions)EditorGUILayout.EnumFlagsField(selected.options);
+		//EditorGUILayout.EndHorizontal();
+		//EditorGUILayout.Space(20);
+
+
+		EditorGUILayout.Space(20);
+		zipFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(zipFoldout, "7zip");
+		if (zipFoldout) {
+			++EditorGUI.indentLevel;
+			selected.needZip = EditorGUILayout.Toggle("Compress", selected.needZip);
+			selected.compressDirPath = EditorGUILayout.TextField("Dir path", selected.compressDirPath);
+			--EditorGUI.indentLevel;
+		}
+		EditorGUILayout.EndFoldoutHeaderGroup();
+
+		EditorGUILayout.Space(20);
+		itchFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(itchFoldout, "itch.io");
+		if (itchFoldout) {
+			++EditorGUI.indentLevel;
+			selected.needItchPush = EditorGUILayout.Toggle("Push to itch.io", selected.needItchPush);
+			selected.itchDirPath = EditorGUILayout.TextField("Dir path", selected.itchDirPath);
+			selected.itchChannel = EditorGUILayout.TextField("Channel", selected.itchChannel);
+			selected.itchAddLastChangelogUpdateNameToVerison = EditorGUILayout.Toggle("Add Changelog Update Name To Verison", selected.itchAddLastChangelogUpdateNameToVerison);
+			--EditorGUI.indentLevel;
+		}
+		EditorGUILayout.EndFoldoutHeaderGroup();
 
 		EditorUtility.SetDirty(settings);
 	}
@@ -192,30 +236,26 @@ public class BuildManagerWindow : EditorWindow {
 			settingsPath = SETTINGS_DEFAULT_PATH;
 			PlayerPrefs.SetString(SETTINGS_PATH_KEY, SETTINGS_DEFAULT_PATH);
 		}
-
-		sequencesList = new InspectorList<BuildSequence>();
-		sequencesList.Init(settings.sequences, "Builds sequences", (BuildSequence seq, int i) => seq.editorName);
-		buidsList = new InspectorList<BuildData>();
-		buidsList.Init(sequencesList.Selected.builds, "Builds", FormBuildNameInList);
-
-		sequencesList.OnChangeSelectionAction += OnSequenceSelectionChanged;
-		buidsList.OnChangeSelectionAction += OnBuildSelectionChanged;
 	}
 
 	static void LoadChangelog() {
 		changelog = ChangelogData.LoadChangelog();
 	}
 
-	static void OnSequenceSelectionChanged(BuildSequence sequence) {
-		buidsList.Init(sequence.builds, "Builds", FormBuildNameInList);
+	static void OnSequenceSelectionChanged(ReorderableList list) {
+		buildList = null;
 	}
 
-	static void OnBuildSelectionChanged(BuildData data) {
+	static void OnBuildSelectionChanged(ReorderableList list) {
 
 	}
 
-	static string FormBuildNameInList(BuildData build, int i){
-		return BuildManager.ConvertBuildTargetToString(build.target);
+	static void OnSequenceAdd(object target) {
+		settings.sequences.Add((target as BuildSequence).Clone() as BuildSequence);
+	}
+
+	static void OnBuildAdd(object target) {
+		settings.sequences[sequenceList.index].builds.Add((target as BuildData).Clone() as BuildData);
 	}
 
 	#region Helpers
