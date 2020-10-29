@@ -31,14 +31,17 @@ public static class BuildManager {
 		string definesBeforeStart = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroupBeforeStart);
 		bool isVRSupported = PlayerSettings.virtualRealitySupported;    //TODO: PlayerSettings.virtualRealitySupported is deprecated. Replace with smth new	
 
-		string[] buildsPath = new string[sequence.builds.Length];
-		for (byte i = 0; i < sequence.builds.Length; ++i) {
+		string[] buildsPath = new string[sequence.builds.Count];
+		for (byte i = 0; i < sequence.builds.Count; ++i) {
 			BuildData data = sequence.builds[i];
+
+			if (!data.isEnabled)
+				continue;
 
 			if (PlayerSettings.virtualRealitySupported != data.isVirtualRealitySupported)
 				PlayerSettings.virtualRealitySupported = data.isVirtualRealitySupported;
 
-			buildsPath[i] = BaseBuild(data.targetGroup, data.target, data.options, data.outputRoot + GetPathWithVars(data, data.middlePath), data.scriptingDefinySymbols, data.isPassbyBuild);
+			buildsPath[i] = BaseBuild(data.targetGroup, data.target, data.options, data.outputRoot + GetPathWithVars(data, data.middlePath), data.scriptingDefineSymbols, data.isPassbyBuild);
 		}
 
 		EditorUserBuildSettings.SwitchActiveBuildTarget(targetGroupBeforeStart, targetBeforeStart);
@@ -49,9 +52,14 @@ public static class BuildManager {
 		startTime = DateTime.Now;
 		Debug.Log($"Start compressing all");
 
-		for (byte i = 0; i < sequence.builds.Length; ++i) {
-			if (!sequence.builds[i].needZip)
+		for (byte i = 0; i < sequence.builds.Count; ++i) {
+			if (!sequence.builds[i].needZip || !sequence.builds[i].isEnabled)
 				continue;
+
+			if(sequence.builds[i].target == BuildTarget.Android) {
+				Debug.Log("Skip android build to .zip, because .apk files already compressed");
+				continue;
+			}
 
 			if (!string.IsNullOrEmpty(buildsPath[i]))
 				BaseCompress(sequence.builds[i].outputRoot + GetPathWithVars(sequence.builds[i], sequence.builds[i].compressDirPath));
@@ -62,8 +70,8 @@ public static class BuildManager {
 		Debug.Log($"End compressing all. Elapsed time: {string.Format("{0:mm\\:ss}", DateTime.Now - startTime)}");
 
 
-		for (byte i = 0; i < sequence.builds.Length; ++i) {
-			if (!sequence.builds[i].needItchPush)
+		for (byte i = 0; i < sequence.builds.Count; ++i) {
+			if (!sequence.builds[i].needItchPush || !sequence.builds[i].isEnabled)
 				continue;
 
 			if (!string.IsNullOrEmpty(buildsPath[i])) {
@@ -76,6 +84,8 @@ public static class BuildManager {
 				Debug.LogWarning($"[Itch.io push] Can't find build for {GetBuildTargetExecutable(sequence.builds[i].target)}");
 			}
 		}
+
+		ShowExplorer(sequence.builds[sequence.builds.Count - 1].outputRoot);
 	}
 
 #region Convert to strings
@@ -219,5 +229,10 @@ public static class BuildManager {
 		Debug.Log(fileName.ToString() + args.ToString());
 		Process.Start(fileName.ToString(), args.ToString());
 	}
-#endregion
+	#endregion
+
+	static void ShowExplorer(string itemPath) {
+		itemPath = itemPath.Replace(@"/", @"\");   // explorer doesn't like front slashes
+		System.Diagnostics.Process.Start("explorer.exe", "/select," + itemPath);
+	}
 }
