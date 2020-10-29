@@ -72,11 +72,21 @@ public class BuildManagerWindow : EditorWindow {
 
 			EditorGUILayout.LabelField("Start build sequence(they red not becouse error, but becouse build stuck your pc if you accidentaly press it)");
 			EditorGUILayout.LabelField("Don't forget to manually download new version of polyglot localization if you want to update it");
-			foreach (var sequence in settings.sequences) {
+
+			EditorGUILayout.BeginHorizontal();
+			for(int i = 0; i < settings.sequences.Count; ++i) {
+				BuildSequence sequence = settings.sequences[i];
+
+				if(i != 0 && i % 3 == 0) {
+					EditorGUILayout.EndHorizontal();
+					EditorGUILayout.BeginHorizontal();
+				}
+
 				if (sequence.isEnabled && GUILayout.Button($"Build {sequence.editorName}")) {
 					BuildManager.RunBuildSequnce(sequence, changelog);
 				}
 			}
+			EditorGUILayout.EndHorizontal();
 
 			GUI.backgroundColor = prevColor;
 		}
