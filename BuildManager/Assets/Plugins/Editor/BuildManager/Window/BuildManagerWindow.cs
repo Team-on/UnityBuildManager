@@ -53,6 +53,15 @@ public class BuildManagerWindow : EditorWindow {
 	void DrawGlobalBuildData() {
 		PlayerSettings.bundleVersion = EditorGUILayout.TextField("Version", PlayerSettings.bundleVersion);
 		PlayerSettings.Android.bundleVersionCode = EditorGUILayout.IntField("Android bundle version", PlayerSettings.Android.bundleVersionCode);
+
+		EditorGUILayout.BeginHorizontal();
+		settings.scriptingDefineSymbols = EditorGUILayout.TextField("Scripting Defines", settings.scriptingDefineSymbols);
+		if (GUILayout.Button($"Set defines", GUILayout.Width(100f))) {
+			PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), settings.scriptingDefineSymbols);
+			//string.Concat(settings.scriptingDefineSymbols, ";", sequence.scriptingDefineSymbolsOverride, ";", data.scriptingDefineSymbolsOverride), 
+		}
+		EditorGUILayout.EndHorizontal();
+
 		EditorGUILayout.Space(20);
 	}
 
@@ -83,7 +92,7 @@ public class BuildManagerWindow : EditorWindow {
 				}
 
 				if (sequence.isEnabled && GUILayout.Button($"Build {sequence.editorName}")) {
-					BuildManager.RunBuildSequnce(sequence, changelog);
+					BuildManager.RunBuildSequnce(settings, sequence, changelog);
 				}
 			}
 			EditorGUILayout.EndHorizontal();
@@ -132,6 +141,13 @@ public class BuildManagerWindow : EditorWindow {
 		if (0 <= sequenceList.index && sequenceList.index < sequenceList.count) {
 			BuildSequence selected = settings.sequences[sequenceList.index];
 
+			EditorGUILayout.BeginHorizontal();
+			selected.scriptingDefineSymbolsOverride = EditorGUILayout.TextField("Defines sequence override", selected.scriptingDefineSymbolsOverride);
+			if (GUILayout.Button($"Set defines", GUILayout.Width(100f))) {
+				PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), string.Concat(settings.scriptingDefineSymbols, ";", selected.scriptingDefineSymbolsOverride));
+			}
+			EditorGUILayout.EndHorizontal();
+
 			//selected.editorName = EditorGUILayout.TextField("Sequence name", selected.editorName);
 			//selected.itchGameLink = EditorGUILayout.TextField("Itch.io link", selected.itchGameLink);
 		}
@@ -167,8 +183,12 @@ public class BuildManagerWindow : EditorWindow {
 		selected.outputRoot = EditorGUILayout.TextField("Output root", selected.outputRoot);
 		selected.middlePath = EditorGUILayout.TextField("Middle path", selected.middlePath);
 
-		EditorGUILayout.Space(20);
-		selected.scriptingDefineSymbols = EditorGUILayout.TextField("Scripting Defines", selected.scriptingDefineSymbols);
+		EditorGUILayout.BeginHorizontal();
+		selected.scriptingDefineSymbolsOverride = EditorGUILayout.TextField("Defines build override", selected.scriptingDefineSymbolsOverride);
+		if (GUILayout.Button($"Set defines", GUILayout.Width(100f))) {
+			PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), string.Concat(settings.scriptingDefineSymbols, ";", settings.sequences[sequenceList.index].scriptingDefineSymbolsOverride, ";", selected.scriptingDefineSymbolsOverride));
+		}
+		EditorGUILayout.EndHorizontal();
 
 		//EditorGUILayout.BeginHorizontal();
 		//EditorGUILayout.LabelField("Build Target Group", GUILayout.MinWidth(0));

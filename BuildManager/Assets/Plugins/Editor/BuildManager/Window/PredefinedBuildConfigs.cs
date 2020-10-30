@@ -34,18 +34,12 @@ public static class PredefinedBuildConfigs {
 
 		List<BuildData> data = new List<BuildData>();
 		foreach (BuildData buildData in standaloneData) {
-			buildData.scriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-
 			data.Add(buildData.Clone() as BuildData);
 		}
 		foreach (BuildData buildData in webData) {
-			buildData.scriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-
 			data.Add(buildData.Clone() as BuildData);
 		}
 		foreach (BuildData buildData in androidData) {
-			buildData.scriptingDefineSymbols = PlayerSettings.GetScriptingDefineSymbolsForGroup(EditorUserBuildSettings.selectedBuildTargetGroup);
-
 			data.Add(buildData.Clone() as BuildData);
 		}
 

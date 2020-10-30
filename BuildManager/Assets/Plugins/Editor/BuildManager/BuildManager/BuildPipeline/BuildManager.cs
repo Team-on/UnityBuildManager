@@ -14,7 +14,7 @@ public static class BuildManager {
 	const string butlerRelativePath = @"Plugins/GameTemplate/Editor/BuildManager/butler/butler.exe";
 	static DateTime usedDate;
 
-	public static void RunBuildSequnce(BuildSequence sequence, ChangelogData changelog) {
+	public static void RunBuildSequnce(BuildManagerSettings settings, BuildSequence sequence, ChangelogData changelog) {
 		// Start init
 		string buildNameString = $"{PlayerSettings.bundleVersion} - {changelog.updateName}";
 #if GAME_TEMPLATE
@@ -41,7 +41,14 @@ public static class BuildManager {
 			if (PlayerSettings.virtualRealitySupported != data.isVirtualRealitySupported)
 				PlayerSettings.virtualRealitySupported = data.isVirtualRealitySupported;
 
-			buildsPath[i] = BaseBuild(data.targetGroup, data.target, data.options, data.outputRoot + GetPathWithVars(data, data.middlePath), data.scriptingDefineSymbols, data.isPassbyBuild);
+			buildsPath[i] = BaseBuild(
+				data.targetGroup, 
+				data.target, 
+				data.options, 
+				data.outputRoot + GetPathWithVars(data, data.middlePath), 
+				string.Concat(settings.scriptingDefineSymbols, ";", sequence.scriptingDefineSymbolsOverride, ";", data.scriptingDefineSymbolsOverride), 
+				data.isPassbyBuild
+			);
 		}
 
 		EditorUserBuildSettings.SwitchActiveBuildTarget(targetGroupBeforeStart, targetBeforeStart);

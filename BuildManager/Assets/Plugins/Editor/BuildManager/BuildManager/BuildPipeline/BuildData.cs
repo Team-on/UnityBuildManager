@@ -12,7 +12,7 @@ public class BuildData : ICloneable {
 
 	public bool isPassbyBuild = false; //Use it to simulate build and give to after build hooks previously build game
 
-	public string scriptingDefineSymbols;
+	public string scriptingDefineSymbolsOverride;
 
 	public BuildTargetGroup targetGroup;
 	public BuildTarget target;
@@ -50,7 +50,7 @@ public class BuildData : ICloneable {
 		isEnabled = true;
 		isPassbyBuild = false;
 
-		scriptingDefineSymbols = "";
+		scriptingDefineSymbolsOverride = "";
 
 		options = BuildOptions.None;
 		isVirtualRealitySupported = false;

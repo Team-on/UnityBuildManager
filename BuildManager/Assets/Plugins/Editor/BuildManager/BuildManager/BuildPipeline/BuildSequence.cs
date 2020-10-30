@@ -11,6 +11,8 @@ public class BuildSequence : ICloneable {
 	public string editorName;
 	public string itchGameLink;
 
+	public string scriptingDefineSymbolsOverride;
+
 	public List<BuildData> builds = new List<BuildData>() { new BuildData() };
 
 	public BuildSequence() : this("New build sequence", $"teamon/gametemplate", new BuildData()) {
@@ -20,6 +22,8 @@ public class BuildSequence : ICloneable {
 		this.editorName = editorName;
 		this.itchGameLink = itchGameLink;
 		this.builds = new List<BuildData>(builds);
+
+		scriptingDefineSymbolsOverride = "";
 
 		isEnabled = true;
 	}
