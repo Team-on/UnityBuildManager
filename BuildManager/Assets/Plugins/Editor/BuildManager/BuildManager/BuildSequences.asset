@@ -29,10 +29,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 0
-      compressDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: windows-32
-      itchDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -51,10 +51,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 0
-      compressDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: windows-64
-      itchDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -73,10 +73,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 0
-      compressDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: linux-universal
-      itchDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -95,10 +95,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 0
-      compressDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: osx-universal
-      itchDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -117,10 +117,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 0
-      compressDirPath: $NAME_$PLATFORM/
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: webgl
-      itchDirPath: $NAME_$PLATFORM/
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -139,7 +139,7 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 0
-      compressDirPath: $NAME_$PLATFORM$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: android
       itchDirPath: $NAME_$PLATFORM$EXECUTABLE
@@ -166,10 +166,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 1
-      compressDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: windows-32
-      itchDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -188,10 +188,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 1
-      compressDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: windows-64
-      itchDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -210,10 +210,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 1
-      compressDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: linux-universal
-      itchDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -232,10 +232,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 1
-      compressDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: osx-universal
-      itchDirPath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -254,10 +254,10 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 1
-      compressDirPath: $NAME_$PLATFORM/
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: webgl
-      itchDirPath: $NAME_$PLATFORM/
+      itchDirPath: $NAME_$PLATFORM
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0
@@ -276,7 +276,7 @@ MonoBehaviour:
       isVirtualRealitySupported: 0
       isReleaseBuild: 0
       needZip: 1
-      compressDirPath: $NAME_$PLATFORM$EXECUTABLE
+      compressDirPath: $NAME_$PLATFORM
       needItchPush: 0
       itchChannel: android
       itchDirPath: $NAME_$PLATFORM$EXECUTABLE

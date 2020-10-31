@@ -50,8 +50,8 @@ public static class PredefinedBuildConfigs {
 		for (int i = 0; i < dataOriginal.Count; ++i) {
 			data.Add(dataOriginal[i].Clone() as BuildData);
 			data[i].middlePath = data[i].middlePath.Replace("_$VERSION", "");
-			data[i].compressDirPath = data[i].middlePath.Replace("_$VERSION", "");
-			data[i].itchDirPath = data[i].middlePath.Replace("_$VERSION", "");
+			data[i].compressDirPath = data[i].compressDirPath.Replace("_$VERSION", "");
+			data[i].itchDirPath = data[i].itchDirPath.Replace("_$VERSION", "");
 		}
 		testingSequence = new BuildSequence("Testing", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
 		data.Clear();
@@ -60,8 +60,8 @@ public static class PredefinedBuildConfigs {
 			data.Add(dataOriginal[i].Clone() as BuildData);
 			data[i].needZip = true;
 			data[i].middlePath = data[i].middlePath.Replace("_$VERSION", "");
-			data[i].compressDirPath = data[i].middlePath.Replace("_$VERSION", "");
-			data[i].itchDirPath = data[i].middlePath.Replace("_$VERSION", "");
+			data[i].compressDirPath = data[i].compressDirPath.Replace("_$VERSION", "");
+			data[i].itchDirPath = data[i].itchDirPath.Replace("_$VERSION", "");
 		}
 		testingSequenceZip = new BuildSequence("Testing + zip", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
 		data.Clear();
