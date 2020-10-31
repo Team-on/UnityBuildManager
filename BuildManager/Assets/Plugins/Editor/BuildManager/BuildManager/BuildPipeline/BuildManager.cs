@@ -205,7 +205,7 @@ public static class BuildManager {
 					PlayerSettings.SetScriptingBackend(buildTargetGroup, ScriptingImplementation.Mono2x);
 					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Debug);
 
-					PlayerSettings.Android.targetArchitectures = AndroidArchitecture.All;
+					PlayerSettings.Android.targetArchitectures = AndroidArchitecture.ARMv7;
 					break;
 				case BuildTargetGroup.WebGL:
 					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Debug);
