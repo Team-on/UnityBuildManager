@@ -28,15 +28,10 @@ public static class PredefinedBuildConfigs {
 		new BuildData(UnityEditor.BuildTargetGroup.Android, UnityEditor.BuildTarget.Android){ middlePath = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", itchDirPath = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", itchChannel = "android"},
 	};
 
-	static PredefinedBuildConfigs() {
-		EditorApplication.update += Init;
-	}
-
 	public static void Init() {
-		EditorApplication.update -= Init;
-
-		List<BuildData> data = new List<BuildData>();
 		List<BuildData> dataOriginal = new List<BuildData>();
+		List<BuildData> data = new List<BuildData>();
+
 		foreach (BuildData buildData in standaloneData) {
 			dataOriginal.Add(buildData.Clone() as BuildData);
 		}
@@ -47,16 +42,28 @@ public static class PredefinedBuildConfigs {
 			dataOriginal.Add(buildData.Clone() as BuildData);
 		}
 
-		testingSequence = new BuildSequence("Testing", $"teamon/{BuildManager.GetProductName()}", dataOriginal.ToArray());
+		FillTestingSequence(ref dataOriginal, ref data);
+		FillReleaseSequence(ref dataOriginal, ref data);
+	}
+
+	static void FillTestingSequence(ref List<BuildData> dataOriginal, ref List<BuildData> data) {
+		for (int i = 0; i < dataOriginal.Count; ++i) {
+			data.Add(dataOriginal[i].Clone() as BuildData);
+			data[i].middlePath = data[i].middlePath.Replace("_$VERSION", "");
+		}
+		testingSequence = new BuildSequence("Testing", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		data.Clear();
 
 		for (int i = 0; i < dataOriginal.Count; ++i) {
 			data.Add(dataOriginal[i].Clone() as BuildData);
 			data[i].needZip = true;
+			data[i].middlePath = data[i].middlePath.Replace("_$VERSION", "");
 		}
 		testingSequenceZip = new BuildSequence("Testing + zip", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
 		data.Clear();
+	}
 
-
+	static void FillReleaseSequence(ref List<BuildData> dataOriginal, ref List<BuildData> data) {
 		for (int i = 0; i < dataOriginal.Count; ++i) {
 			dataOriginal[i].outputRoot += "Releases/";
 		}

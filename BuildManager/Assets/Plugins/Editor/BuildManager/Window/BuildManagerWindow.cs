@@ -218,7 +218,6 @@ public class BuildManagerWindow : EditorWindow {
 		}
 		EditorGUILayout.EndFoldoutHeaderGroup();
 
-		EditorGUILayout.Space(20);
 		itchFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(itchFoldout, "itch.io");
 		if (itchFoldout) {
 			++EditorGUI.indentLevel;

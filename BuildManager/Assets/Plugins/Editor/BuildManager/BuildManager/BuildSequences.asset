@@ -19,8 +19,8 @@ MonoBehaviour:
     scriptingDefineSymbolsOverride: 
     builds:
     - isEnabled: 1
-      outputRoot: Builds/Releases/
-      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      outputRoot: Builds/
+      middlePath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
@@ -41,8 +41,8 @@ MonoBehaviour:
       needSteamPush: 0
       needGoogleDrivePush: 0
     - isEnabled: 1
-      outputRoot: Builds/Releases/
-      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      outputRoot: Builds/
+      middlePath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
@@ -63,8 +63,8 @@ MonoBehaviour:
       needSteamPush: 0
       needGoogleDrivePush: 0
     - isEnabled: 1
-      outputRoot: Builds/Releases/
-      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      outputRoot: Builds/
+      middlePath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
@@ -85,8 +85,8 @@ MonoBehaviour:
       needSteamPush: 0
       needGoogleDrivePush: 0
     - isEnabled: 1
-      outputRoot: Builds/Releases/
-      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      outputRoot: Builds/
+      middlePath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
@@ -107,8 +107,8 @@ MonoBehaviour:
       needSteamPush: 0
       needGoogleDrivePush: 0
     - isEnabled: 1
-      outputRoot: Builds/Releases/
-      middlePath: $NAME_$VERSION_$PLATFORM/
+      outputRoot: Builds/
+      middlePath: $NAME_$PLATFORM/
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 13
@@ -129,8 +129,8 @@ MonoBehaviour:
       needSteamPush: 0
       needGoogleDrivePush: 0
     - isEnabled: 1
-      outputRoot: Builds/Releases/
-      middlePath: $NAME_$VERSION_$PLATFORM$EXECUTABLE
+      outputRoot: Builds/
+      middlePath: $NAME_$PLATFORM$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 7
@@ -157,7 +157,7 @@ MonoBehaviour:
     builds:
     - isEnabled: 1
       outputRoot: Builds/
-      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      middlePath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
@@ -179,7 +179,7 @@ MonoBehaviour:
       needGoogleDrivePush: 0
     - isEnabled: 1
       outputRoot: Builds/
-      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      middlePath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
@@ -201,7 +201,7 @@ MonoBehaviour:
       needGoogleDrivePush: 0
     - isEnabled: 1
       outputRoot: Builds/
-      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      middlePath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
@@ -223,7 +223,7 @@ MonoBehaviour:
       needGoogleDrivePush: 0
     - isEnabled: 1
       outputRoot: Builds/
-      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      middlePath: $NAME_$PLATFORM/$NAME/$NAME$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
@@ -245,7 +245,7 @@ MonoBehaviour:
       needGoogleDrivePush: 0
     - isEnabled: 1
       outputRoot: Builds/
-      middlePath: $NAME_$VERSION_$PLATFORM/
+      middlePath: $NAME_$PLATFORM/
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 13
@@ -267,7 +267,7 @@ MonoBehaviour:
       needGoogleDrivePush: 0
     - isEnabled: 1
       outputRoot: Builds/
-      middlePath: $NAME_$VERSION_$PLATFORM$EXECUTABLE
+      middlePath: $NAME_$PLATFORM$EXECUTABLE
       isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 7
@@ -432,7 +432,7 @@ MonoBehaviour:
     - isEnabled: 1
       outputRoot: Builds/Releases/
       middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
-      isPassbyBuild: 1
+      isPassbyBuild: 0
       scriptingDefineSymbolsOverride: 
       targetGroup: 1
       target: 5
@@ -444,6 +444,116 @@ MonoBehaviour:
       needItchPush: 0
       itchChannel: windows-32
       itchDirPath: $NAME_$VERSION_$PLATFORM
+      itchAddLastChangelogUpdateNameToVerison: 1
+      itchLastChangelogUpdateName: 
+      useGithubActions: 0
+      useUnityActions: 0
+      needGamejolthPush: 0
+      needSteamPush: 0
+      needGoogleDrivePush: 0
+    - isEnabled: 1
+      outputRoot: Builds/Releases/
+      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      isPassbyBuild: 0
+      scriptingDefineSymbolsOverride: 
+      targetGroup: 1
+      target: 19
+      options: 0
+      isVirtualRealitySupported: 0
+      isReleaseBuild: 1
+      needZip: 0
+      compressDirPath: $NAME_$VERSION_$PLATFORM
+      needItchPush: 0
+      itchChannel: windows-64
+      itchDirPath: $NAME_$VERSION_$PLATFORM
+      itchAddLastChangelogUpdateNameToVerison: 1
+      itchLastChangelogUpdateName: 
+      useGithubActions: 0
+      useUnityActions: 0
+      needGamejolthPush: 0
+      needSteamPush: 0
+      needGoogleDrivePush: 0
+    - isEnabled: 1
+      outputRoot: Builds/Releases/
+      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      isPassbyBuild: 0
+      scriptingDefineSymbolsOverride: 
+      targetGroup: 1
+      target: 24
+      options: 0
+      isVirtualRealitySupported: 0
+      isReleaseBuild: 1
+      needZip: 0
+      compressDirPath: $NAME_$VERSION_$PLATFORM
+      needItchPush: 0
+      itchChannel: linux-universal
+      itchDirPath: $NAME_$VERSION_$PLATFORM
+      itchAddLastChangelogUpdateNameToVerison: 1
+      itchLastChangelogUpdateName: 
+      useGithubActions: 0
+      useUnityActions: 0
+      needGamejolthPush: 0
+      needSteamPush: 0
+      needGoogleDrivePush: 0
+    - isEnabled: 1
+      outputRoot: Builds/Releases/
+      middlePath: $NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE
+      isPassbyBuild: 0
+      scriptingDefineSymbolsOverride: 
+      targetGroup: 1
+      target: 2
+      options: 0
+      isVirtualRealitySupported: 0
+      isReleaseBuild: 1
+      needZip: 0
+      compressDirPath: $NAME_$VERSION_$PLATFORM
+      needItchPush: 0
+      itchChannel: osx-universal
+      itchDirPath: $NAME_$VERSION_$PLATFORM
+      itchAddLastChangelogUpdateNameToVerison: 1
+      itchLastChangelogUpdateName: 
+      useGithubActions: 0
+      useUnityActions: 0
+      needGamejolthPush: 0
+      needSteamPush: 0
+      needGoogleDrivePush: 0
+    - isEnabled: 1
+      outputRoot: Builds/Releases/
+      middlePath: $NAME_$VERSION_$PLATFORM/
+      isPassbyBuild: 0
+      scriptingDefineSymbolsOverride: 
+      targetGroup: 13
+      target: 20
+      options: 0
+      isVirtualRealitySupported: 0
+      isReleaseBuild: 1
+      needZip: 0
+      compressDirPath: $NAME_$VERSION_$PLATFORM
+      needItchPush: 0
+      itchChannel: webgl
+      itchDirPath: $NAME_$VERSION_$PLATFORM
+      itchAddLastChangelogUpdateNameToVerison: 1
+      itchLastChangelogUpdateName: 
+      useGithubActions: 0
+      useUnityActions: 0
+      needGamejolthPush: 0
+      needSteamPush: 0
+      needGoogleDrivePush: 0
+    - isEnabled: 1
+      outputRoot: Builds/Releases/
+      middlePath: $NAME_$VERSION_$PLATFORM$EXECUTABLE
+      isPassbyBuild: 0
+      scriptingDefineSymbolsOverride: 
+      targetGroup: 7
+      target: 13
+      options: 0
+      isVirtualRealitySupported: 0
+      isReleaseBuild: 1
+      needZip: 0
+      compressDirPath: $NAME_$VERSION_$PLATFORM
+      needItchPush: 0
+      itchChannel: android
+      itchDirPath: $NAME_$VERSION_$PLATFORM$EXECUTABLE
       itchAddLastChangelogUpdateNameToVerison: 1
       itchLastChangelogUpdateName: 
       useGithubActions: 0

@@ -582,12 +582,12 @@ PlayerSettings:
     13: 
   platformArchitecture: {}
   scriptingBackend:
-    Android: 1
-    Standalone: 1
+    Android: 0
+    Standalone: 0
   il2cppCompilerConfiguration:
-    Android: 2
-    Standalone: 2
-    WebGL: 2
+    Android: 0
+    Standalone: 0
+    WebGL: 0
   managedStrippingLevel: {}
   incrementalIl2cppBuild: {}
   allowUnsafeCode: 0
