@@ -42,12 +42,13 @@ public static class BuildManager {
 				PlayerSettings.virtualRealitySupported = data.isVirtualRealitySupported;
 
 			buildsPath[i] = BaseBuild(
-				data.targetGroup, 
-				data.target, 
-				data.options, 
-				data.outputRoot + GetPathWithVars(data, data.middlePath), 
-				string.Concat(settings.scriptingDefineSymbols, ";", sequence.scriptingDefineSymbolsOverride, ";", data.scriptingDefineSymbolsOverride), 
-				data.isPassbyBuild
+				data.targetGroup,
+				data.target,
+				data.options,
+				data.outputRoot + GetPathWithVars(data, data.middlePath),
+				string.Concat(settings.scriptingDefineSymbols, ";", sequence.scriptingDefineSymbolsOverride, ";", data.scriptingDefineSymbolsOverride),
+				data.isPassbyBuild,
+				data.isReleaseBuild
 			);
 		}
 
@@ -155,7 +156,7 @@ public static class BuildManager {
 #endregion
 
 #region Base methods
-	static string BaseBuild(BuildTargetGroup buildTargetGroup, BuildTarget buildTarget, BuildOptions buildOptions, string buildPath, string definesSymbols, bool isPassbyBuild) {
+	static string BaseBuild(BuildTargetGroup buildTargetGroup, BuildTarget buildTarget, BuildOptions buildOptions, string buildPath, string definesSymbols, bool isPassbyBuild, bool isReleaseBuild) {
 		if (isPassbyBuild) {
 			return buildPath;
 		}
@@ -164,8 +165,56 @@ public static class BuildManager {
 			PlayerSettings.Android.keyaliasPass = PlayerSettings.Android.keystorePass = "keystore";
 		}
 
-		BuildTarget targetBeforeStart = EditorUserBuildSettings.activeBuildTarget;
-		BuildTargetGroup targetGroupBeforeStart = BuildPipeline.GetBuildTargetGroup(targetBeforeStart);
+		if (isReleaseBuild) {
+			switch (buildTargetGroup) {
+				case BuildTargetGroup.Standalone:
+					buildOptions |= BuildOptions.CompressWithLz4;
+
+					PlayerSettings.SetScriptingBackend(buildTargetGroup, ScriptingImplementation.IL2CPP);
+					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Master);
+					break;
+				case BuildTargetGroup.Android:
+					buildOptions |= BuildOptions.CompressWithLz4;
+
+					PlayerSettings.SetScriptingBackend(buildTargetGroup, ScriptingImplementation.IL2CPP);
+					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Master);
+
+					PlayerSettings.Android.targetArchitectures = AndroidArchitecture.All;
+					break;
+				case BuildTargetGroup.WebGL:
+					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Master);
+					break;
+				default:
+					Debug.LogWarning($"{buildTargetGroup} is unsupported for release builds. No optimizations applied");
+					break;
+			}
+		}
+		else {
+			switch (buildTargetGroup) {
+				case BuildTargetGroup.Standalone:
+					buildOptions ^= BuildOptions.CompressWithLz4;
+					buildOptions ^= BuildOptions.CompressWithLz4HC;
+
+					PlayerSettings.SetScriptingBackend(buildTargetGroup, ScriptingImplementation.Mono2x);
+					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Debug);
+					break;
+				case BuildTargetGroup.Android:
+					buildOptions ^= BuildOptions.CompressWithLz4;
+					buildOptions ^= BuildOptions.CompressWithLz4HC;
+
+					PlayerSettings.SetScriptingBackend(buildTargetGroup, ScriptingImplementation.Mono2x);
+					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Debug);
+
+					PlayerSettings.Android.targetArchitectures = AndroidArchitecture.All;
+					break;
+				case BuildTargetGroup.WebGL:
+					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Debug);
+					break;
+				default:
+					Debug.LogWarning($"{buildTargetGroup} is unsupported for debug builds. No optimizations applied");
+					break;
+			}
+		}
 
 		BuildPlayerOptions buildPlayerOptions = new BuildPlayerOptions {
 			scenes = EditorBuildSettings.scenes.Where(s => s.enabled).Select(s => s.path).ToArray(),
@@ -180,6 +229,14 @@ public static class BuildManager {
 		BuildSummary summary = report.summary;
 
 		if (summary.result == BuildResult.Succeeded) {
+			if (isReleaseBuild) {  //Destroy IL2CPP junk after build
+				string buildRootPath = Path.GetDirectoryName(summary.outputPath);
+				string[] dirs = Directory.GetDirectories(buildRootPath);
+				var il2cppDirs = dirs.Where(s => s.Contains("BackUpThisFolder_ButDontShipItWithYourGame"));
+				foreach (var dir in il2cppDirs)
+					Directory.Delete(dir, true);
+			}
+
 			Debug.Log($"{summary.platform} succeeded.  \t Time: {string.Format("{0:mm\\:ss}", summary.totalTime)}  \t Size: {summary.totalSize / 1048576} Mb");
 		}
 		else if (summary.result == BuildResult.Failed) {

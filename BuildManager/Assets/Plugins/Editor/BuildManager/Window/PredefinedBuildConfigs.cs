@@ -5,9 +5,12 @@ using UnityEditor;
 
 public static class PredefinedBuildConfigs {
 	public static BuildSequence testingSequence;
+	public static BuildSequence testingSequenceZip;
+
 	public static BuildSequence releaseLocalSequence;
 	public static BuildSequence releaseLocalZipSequence;
 	public static BuildSequence releaseLocalZipItchSequence;
+
 	public static BuildSequence passbySequence;
 
 	public static BuildData[] standaloneData = new BuildData[] { 
@@ -33,42 +36,63 @@ public static class PredefinedBuildConfigs {
 		EditorApplication.update -= Init;
 
 		List<BuildData> data = new List<BuildData>();
+		List<BuildData> dataOriginal = new List<BuildData>();
 		foreach (BuildData buildData in standaloneData) {
-			data.Add(buildData.Clone() as BuildData);
+			dataOriginal.Add(buildData.Clone() as BuildData);
 		}
 		foreach (BuildData buildData in webData) {
-			data.Add(buildData.Clone() as BuildData);
+			dataOriginal.Add(buildData.Clone() as BuildData);
 		}
 		foreach (BuildData buildData in androidData) {
-			data.Add(buildData.Clone() as BuildData);
+			dataOriginal.Add(buildData.Clone() as BuildData);
 		}
 
-		testingSequence = new BuildSequence("Testing", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		testingSequence = new BuildSequence("Testing", $"teamon/{BuildManager.GetProductName()}", dataOriginal.ToArray());
 
-		for (int i = 0; i < data.Count; ++i) {
-			data[i] = data[i].Clone() as BuildData;
+		for (int i = 0; i < dataOriginal.Count; ++i) {
+			data.Add(dataOriginal[i].Clone() as BuildData);
+			data[i].needZip = true;
+		}
+		testingSequenceZip = new BuildSequence("Testing + zip", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		data.Clear();
+
+
+		for (int i = 0; i < dataOriginal.Count; ++i) {
+			dataOriginal[i].outputRoot += "Releases/";
+		}
+
+		for (int i = 0; i < dataOriginal.Count; ++i) {
+			data.Add(dataOriginal[i].Clone() as BuildData);
+			data[i].isReleaseBuild = true;
 		}
 		releaseLocalSequence = new BuildSequence("Release", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		data.Clear();
 
-		for (int i = 0; i < data.Count; ++i) {
-			data[i] = data[i].Clone() as BuildData;
+		for (int i = 0; i < dataOriginal.Count; ++i) {
+			data.Add(dataOriginal[i].Clone() as BuildData);
+			data[i].isReleaseBuild = true;
 			data[i].needZip = true;
 		}
 		releaseLocalZipSequence = new BuildSequence("Release + zip", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		data.Clear();
 
-		for (int i = 0; i < data.Count; ++i) {
-			data[i] = data[i].Clone() as BuildData;
+		for (int i = 0; i < dataOriginal.Count; ++i) {
+			data.Add(dataOriginal[i].Clone() as BuildData);
+			data[i].isReleaseBuild = true;
 			data[i].needZip = true;
 			data[i].needItchPush = true;
 		}
 		releaseLocalZipItchSequence = new BuildSequence("Release full", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		data.Clear();
 
-		for (int i = 0; i < data.Count; ++i) {
-			data[i] = data[i].Clone() as BuildData;
+		for (int i = 0; i < dataOriginal.Count; ++i) {
+			data.Add(dataOriginal[i].Clone() as BuildData);
+			data[i].isReleaseBuild = true;
 			data[i].isPassbyBuild = true;
 			data[i].needZip = true;
 			data[i].needItchPush = true;
 		}
 		passbySequence = new BuildSequence("Passby local release", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		data.Clear();
 	}
 }

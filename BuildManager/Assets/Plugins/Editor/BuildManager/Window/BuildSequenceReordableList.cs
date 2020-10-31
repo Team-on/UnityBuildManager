@@ -52,14 +52,16 @@ public class BuildSequenceReordableList {
 			string label = $"{PredefinedBuildConfigs.testingSequence.editorName}";
 			menu.AddItem(new GUIContent(label), false, menuItemHandler, PredefinedBuildConfigs.testingSequence);
 
+			label = $"{PredefinedBuildConfigs.testingSequenceZip.editorName}";
+			menu.AddItem(new GUIContent(label), false, menuItemHandler, PredefinedBuildConfigs.testingSequenceZip);
+
+
 			menu.AddSeparator("");
 			label = $"{PredefinedBuildConfigs.releaseLocalSequence.editorName}";
 			menu.AddItem(new GUIContent(label), false, menuItemHandler, PredefinedBuildConfigs.releaseLocalSequence);
 
-
 			label = $"{PredefinedBuildConfigs.releaseLocalZipSequence.editorName}";
 			menu.AddItem(new GUIContent(label), false, menuItemHandler, PredefinedBuildConfigs.releaseLocalZipSequence);
-
 
 			label = $"{PredefinedBuildConfigs.releaseLocalZipItchSequence.editorName}";
 			menu.AddItem(new GUIContent(label), false, menuItemHandler, PredefinedBuildConfigs.releaseLocalZipItchSequence);

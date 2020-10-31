@@ -177,6 +177,7 @@ public class BuildManagerWindow : EditorWindow {
 		SerializedObject obj = new SerializedObject(settings);
 
 		selected.isPassbyBuild = EditorGUILayout.Toggle("Is Passby build", selected.isPassbyBuild);
+		selected.isReleaseBuild = EditorGUILayout.Toggle("Is Release build", selected.isReleaseBuild);
 		selected.isVirtualRealitySupported = EditorGUILayout.Toggle("VR Supported", selected.isVirtualRealitySupported);
 
 		EditorGUILayout.Space(20);

@@ -24,7 +24,7 @@ public class BuildSequence : ICloneable {
 		this.builds = new List<BuildData>(builds);
 
 		scriptingDefineSymbolsOverride = "";
-
+		
 		isEnabled = true;
 	}
 

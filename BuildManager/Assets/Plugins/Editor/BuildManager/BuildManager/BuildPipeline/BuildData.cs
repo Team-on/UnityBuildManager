@@ -20,6 +20,8 @@ public class BuildData : ICloneable {
 
 	public bool isVirtualRealitySupported;
 
+	public bool isReleaseBuild;	// Maximum compressed build with Release IL2CPP
+
 	public bool needZip;
 	public string compressDirPath;
 
@@ -57,6 +59,8 @@ public class BuildData : ICloneable {
 
 		outputRoot = "Builds/";
 		middlePath = "$NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE";
+
+		isReleaseBuild = false;
 
 		needZip = false;
 		compressDirPath = "$NAME_$VERSION_$PLATFORM";
