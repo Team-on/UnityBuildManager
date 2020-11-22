@@ -14,9 +14,12 @@ public static class BuildManager {
 	const string butlerRelativePath = @"Plugins/Editor/BuildManager/BuildManager/butler/butler.exe";
 	static DateTime usedDate;
 
+	static string buildNameString;
+	static string[] buildsPath;
+
 	public static void RunBuildSequnce(BuildManagerSettings settings, BuildSequence sequence, ChangelogData changelog) {
 		// Start init
-		string buildNameString = $"{PlayerSettings.bundleVersion} - {changelog.updateName}";
+		buildNameString = $"{PlayerSettings.bundleVersion} - {changelog.updateName}";
 #if GAME_TEMPLATE
 		TemplateGameManager.InstanceEditor.buildNameString = buildNameString;
 		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
@@ -26,12 +29,26 @@ public static class BuildManager {
 
 		Debug.Log("Start building all");
 		DateTime startTime = DateTime.Now;
+		
+		Build(settings, sequence);
+		PostBuild(sequence);
+		Compress(sequence);
+		ItchioPush(sequence, changelog);
+
+		Debug.Log($"End building all. Elapsed time: {string.Format("{0:mm\\:ss}", DateTime.Now - startTime)}");
+
+#if UNITY_EDITOR_WIN
+		ShowExplorer(sequence.builds[sequence.builds.Count - 1].outputRoot);
+#endif
+	}
+
+	static void Build(BuildManagerSettings settings, BuildSequence sequence) {
 		BuildTarget targetBeforeStart = EditorUserBuildSettings.activeBuildTarget;
 		BuildTargetGroup targetGroupBeforeStart = BuildPipeline.GetBuildTargetGroup(targetBeforeStart);
 		string definesBeforeStart = PlayerSettings.GetScriptingDefineSymbolsForGroup(targetGroupBeforeStart);
 		bool isVRSupported = PlayerSettings.virtualRealitySupported;    //TODO: PlayerSettings.virtualRealitySupported is deprecated. Replace with smth new	
 
-		string[] buildsPath = new string[sequence.builds.Count];
+		buildsPath = new string[sequence.builds.Count];
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
 			BuildData data = sequence.builds[i];
 
@@ -57,7 +74,9 @@ public static class BuildManager {
 		EditorUserBuildSettings.SwitchActiveBuildTarget(targetGroupBeforeStart, targetBeforeStart);
 		PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroupBeforeStart, definesBeforeStart);
 		PlayerSettings.virtualRealitySupported = isVRSupported;
+	}
 
+	static void PostBuild(BuildSequence sequence) {
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
 			if (!sequence.builds[i].isEnabled)
 				continue;
@@ -89,7 +108,9 @@ public static class BuildManager {
 #endif
 			}
 		}
+	}
 
+	static void Compress(BuildSequence sequence) {
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
 			if (!sequence.builds[i].needZip || !sequence.builds[i].isEnabled)
 				continue;
@@ -104,9 +125,9 @@ public static class BuildManager {
 			else
 				Debug.LogWarning($"[Compressing] Can't find build for {GetBuildTargetExecutable(sequence.builds[i].target)}");
 		}
+	}
 
-
-
+	static void ItchioPush(BuildSequence sequence, ChangelogData changelog) {
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
 			if (!sequence.builds[i].needItchPush || !sequence.builds[i].isEnabled)
 				continue;
@@ -121,12 +142,6 @@ public static class BuildManager {
 				Debug.LogWarning($"[Itch.io push] Can't find build for {GetBuildTargetExecutable(sequence.builds[i].target)}");
 			}
 		}
-
-		Debug.Log($"End building all. Elapsed time: {string.Format("{0:mm\\:ss}", DateTime.Now - startTime)}");
-
-#if UNITY_EDITOR_WIN
-		ShowExplorer(sequence.builds[sequence.builds.Count - 1].outputRoot);
-#endif
 	}
 
 	#region Convert to strings
