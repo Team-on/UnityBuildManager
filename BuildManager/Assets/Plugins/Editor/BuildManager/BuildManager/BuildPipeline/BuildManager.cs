@@ -57,16 +57,10 @@ public static class BuildManager {
 		EditorUserBuildSettings.SwitchActiveBuildTarget(targetGroupBeforeStart, targetBeforeStart);
 		PlayerSettings.SetScriptingDefineSymbolsForGroup(targetGroupBeforeStart, definesBeforeStart);
 		PlayerSettings.virtualRealitySupported = isVRSupported;
-		Debug.Log($"End building all. Elapsed time: {string.Format("{0:mm\\:ss}", DateTime.Now - startTime)}");
 
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
-			if (!sequence.builds[i].needZip || !sequence.builds[i].isEnabled)
+			if (!sequence.builds[i].isEnabled)
 				continue;
-
-			if (sequence.builds[i].target == BuildTarget.Android) {
-				Debug.Log("Skip android build to .zip, because .apk files already compressed");
-				continue;
-			}
 
 			if (!string.IsNullOrEmpty(buildsPath[i])) {
 				if (sequence.builds[i].isReleaseBuild) {  //Destroy IL2CPP junk after build
@@ -76,11 +70,25 @@ public static class BuildManager {
 					foreach (var dir in il2cppDirs)
 						Directory.Delete(dir, true);
 				}
+
+#if UNITY_EDITOR_WIN
+				//https://forum.unity.com/threads/mac-unity-build-from-a-pc-not-opening-on-mac.947727/
+				//Use git bash to execute this command
+				if (sequence.builds[i].target == BuildTarget.StandaloneOSX) {
+					Debug.Log($"chmod -R 777 {sequence.builds[i].outputRoot + GetPathWithVars(sequence.builds[i], sequence.builds[i].middlePath)}.app");
+
+					Process process = new Process() {
+						StartInfo = new ProcessStartInfo {
+							WindowStyle = ProcessWindowStyle.Hidden,
+							FileName = "cmd.exe",
+							Arguments = $"start \"\" \" %PROGRAMFILES%\\Git\\bin\\sh.exe\" --chmod -R 777 {sequence.builds[i].outputRoot + GetPathWithVars(sequence.builds[i], sequence.builds[i].middlePath)}.app",
+						},
+					};
+					process.Start();
+				}
+#endif
 			}
 		}
-
-		startTime = DateTime.Now;
-		Debug.Log($"Start compressing all");
 
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
 			if (!sequence.builds[i].needZip || !sequence.builds[i].isEnabled)
@@ -97,7 +105,6 @@ public static class BuildManager {
 				Debug.LogWarning($"[Compressing] Can't find build for {GetBuildTargetExecutable(sequence.builds[i].target)}");
 		}
 
-		Debug.Log($"End compressing all. Elapsed time: {string.Format("{0:mm\\:ss}", DateTime.Now - startTime)}");
 
 
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
@@ -115,7 +122,11 @@ public static class BuildManager {
 			}
 		}
 
+		Debug.Log($"End building all. Elapsed time: {string.Format("{0:mm\\:ss}", DateTime.Now - startTime)}");
+
+#if UNITY_EDITOR_WIN
 		ShowExplorer(sequence.builds[sequence.builds.Count - 1].outputRoot);
+#endif
 	}
 
 	#region Convert to strings
@@ -314,6 +325,6 @@ public static class BuildManager {
 
 	static void ShowExplorer(string itemPath) {
 		itemPath = itemPath.Replace(@"/", @"\");   // explorer doesn't like front slashes
-		System.Diagnostics.Process.Start("explorer.exe", "/select," + itemPath);
+		Process.Start("explorer.exe", "/select," + itemPath);
 	}
 }

@@ -835,4 +835,31 @@ MonoBehaviour:
       needGamejolthPush: 0
       needSteamPush: 0
       needGoogleDrivePush: 0
+  - isEnabled: 1
+    editorName: Testing win only
+    itchGameLink: teamon/BuildManager
+    scriptingDefineSymbolsOverride: 
+    builds:
+    - isEnabled: 1
+      outputRoot: Builds/
+      middlePath: $NAME_TEST/$NAME$EXECUTABLE
+      isPassbyBuild: 1
+      scriptingDefineSymbolsOverride: 
+      targetGroup: 1
+      target: 5
+      options: 0
+      isVirtualRealitySupported: 0
+      isReleaseBuild: 0
+      needZip: 1
+      compressDirPath: $NAME_TEST
+      needItchPush: 0
+      itchChannel: windows-testing
+      itchDirPath: $NAME_TEST
+      itchAddLastChangelogUpdateNameToVerison: 1
+      itchLastChangelogUpdateName: 
+      useGithubActions: 0
+      useUnityActions: 0
+      needGamejolthPush: 0
+      needSteamPush: 0
+      needGoogleDrivePush: 0
   scriptingDefineSymbols: 
