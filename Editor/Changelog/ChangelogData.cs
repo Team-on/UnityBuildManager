@@ -11,7 +11,7 @@ public class ChangelogData {
 	const string SAVE_FILE_NOREZ = "ChangelogSettings";
 	const string SAVE_FILE = "ChangelogSettings.json";
 	const string SAVE_FILE_EDITORPREFS = "ChangelogSettings.Save";
-	const string SAVE_FILE_EDITORPREFS_DEFAULT = "Plugins/Editor/BuildManager/Changelog/ChangelogSettings.json";
+	const string SAVE_FILE_EDITORPREFS_DEFAULT = "Editor/Setting/ChangelogSettings.json";
 
 	public static void SaveChangelog(ChangelogData data) {
 		if (!PlayerPrefs.HasKey(SAVE_FILE_EDITORPREFS)) {

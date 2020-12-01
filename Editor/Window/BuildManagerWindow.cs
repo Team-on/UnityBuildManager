@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditorInternal;
 
 public class BuildManagerWindow : EditorWindow {
-	const string SETTINGS_DEFAULT_PATH = "Assets/Plugins/Editor/BuildManager/BuildManagerг/BuildSequences.asset"; //Need Assets in path, cuz used by AssetDatabase.CreateAsset
+	const string SETTINGS_DEFAULT_PATH = "Assets/Editor/Setting/BuildSequences.asset"; //Need Assets in path, cuz used by AssetDatabase.CreateAsset
 	const string SETTINGS_PATH_KEY = "BuildManagerWindow.SettingsPath";
 
 	static string settingsPath;
@@ -247,9 +247,9 @@ public class BuildManagerWindow : EditorWindow {
 
 		//No path, or cant locate asset at path. Try to find settings in assets.
 		if (string.IsNullOrEmpty(settingsPath)) {
-			string[] guids = AssetDatabase.FindAssets("t:BuildManagerSettings");
+			string[] guids = AssetDatabase.FindAssets("t:BuildManagerSettings", new string[] { "Assets" });
 			if (guids.Length >= 2) {
-				Debug.LogError("[BuildManagerWindow]. 2+ BuildManagerSettings exist. Consider on using only 1 setting. The first on will be used.");
+				Debug.LogError("[BuildManagerWindow]. 2+ BuildManagerSettings exist. Consider on using only 1 setting. The first one will be used.");
 			}
 
 			if (guids.Length != 0) {
@@ -261,7 +261,11 @@ public class BuildManagerWindow : EditorWindow {
 
 		//Cant find settings. Create new
 		if (settings == null) {
+			BuildManagerSettings defaultSettings = AssetDatabase.LoadAssetAtPath<BuildManagerSettings>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("t:BuildManagerSettings", new string[] { "Packages" })[0]));
+			
 			settings = (BuildManagerSettings)ScriptableObject.CreateInstance(typeof(BuildManagerSettings));
+			settings.CloneInto(defaultSettings);
+
 			AssetDatabase.CreateAsset(settings, SETTINGS_DEFAULT_PATH);
 			settingsPath = SETTINGS_DEFAULT_PATH;
 			PlayerPrefs.SetString(SETTINGS_PATH_KEY, SETTINGS_DEFAULT_PATH);
