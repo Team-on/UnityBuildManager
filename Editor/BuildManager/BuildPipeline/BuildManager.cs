@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 using System.Linq;
 using System.Text;
 using System.IO;
@@ -11,8 +12,7 @@ using Ionic.Zip;
 using Debug = UnityEngine.Debug;
 
 public static class BuildManager {
-	const string butlerRelativePath = @"Library/PackageCache/com.teamon.buildmanager/Editor/BuildManager/butler/butler.exe";
-	const string butlerRelativePathAlt = @"Packages/com.teamon.buildmanager/Editor/BuildManager/butler/butler.exe";
+	const string butlerRelativePath = @"Editor/Butler/butler.exe";
 	static DateTime usedDate;
 
 	static string buildNameString;
@@ -317,11 +317,11 @@ public static class BuildManager {
 		StringBuilder fileName = new StringBuilder(128);
 		StringBuilder args = new StringBuilder(128);
 
-		string butlerPath = "";
 
-		butlerPath = Application.dataPath.Replace("/Assets", "/") + butlerRelativePath;
+		string butlerPath = Application.dataPath + "/" + butlerRelativePath;
 		if (!File.Exists(butlerPath)) {
-			butlerPath = Application.dataPath.Replace("/Assets", "/") + butlerRelativePathAlt;
+			Debug.LogWarning("Butler not found.");
+			DownloadButler();
 		}
 
 		fileName.Append(butlerPath);
@@ -348,5 +348,35 @@ public static class BuildManager {
 	static void ShowExplorer(string itemPath) {
 		itemPath = itemPath.Replace(@"/", @"\");   // explorer doesn't like front slashes
 		Process.Start("explorer.exe", "/select," + itemPath);
+	}
+
+	[MenuItem("Window/Custom/BuildManager/Download butler(itch.io)")]
+	public static void DownloadButler() {
+		using (var client = new WebClient()) {
+			Debug.Log("Downloading butler...");
+
+			string butlerPath = Application.dataPath + "/" + butlerRelativePath;
+			string butlerDirPath = butlerPath.Replace("butler.exe", "");
+			string zipPath = butlerPath.Replace("butler.exe", "butler.zip");
+
+			string[] dirs = ("Assets/" + butlerRelativePath).Split('/');
+			string allPath = dirs[0];
+			for (int i = 1; i < dirs.Length - 1; ++i) {
+				if (!AssetDatabase.IsValidFolder(allPath + "/" + dirs[i])) {
+					AssetDatabase.CreateFolder(allPath, dirs[i]);
+				}
+				allPath = allPath + "/" + dirs[i];
+			}
+
+			client.DownloadFile("https://broth.itch.ovh/butler/windows-386/LATEST/archive/default", zipPath);
+
+			using (ZipFile zip = ZipFile.Read(zipPath)) {
+				foreach (ZipEntry e in zip) {
+					e.Extract(butlerDirPath, ExtractExistingFileAction.OverwriteSilently);
+				}
+			}
+
+			File.Delete(zipPath);
+		}
 	}
 }

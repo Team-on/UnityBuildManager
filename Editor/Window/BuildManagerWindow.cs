@@ -20,7 +20,7 @@ public class BuildManagerWindow : EditorWindow {
 	static ReorderableList sequenceList;
 	static ReorderableList buildList;
 
-	[MenuItem("Window/Custom/Builds &b")]
+	[MenuItem("Window/Custom/BuildManager/Builds window &b")]
 	public static void ShowWindow() {
 		sequenceList = null;
 		buildList = null;
