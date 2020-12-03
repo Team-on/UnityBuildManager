@@ -11,7 +11,8 @@ using Ionic.Zip;
 using Debug = UnityEngine.Debug;
 
 public static class BuildManager {
-	const string butlerRelativePath = @"Plugins/Editor/BuildManager/BuildManager/butler/butler.exe";
+	const string butlerRelativePath = @"Library/PackageCache/com.teamon.buildmanager/Editor/BuildManager/butler/butler.exe";
+	const string butlerRelativePathAlt = @"Packages/com.teamon.buildmanager/Editor/BuildManager/butler/butler.exe";
 	static DateTime usedDate;
 
 	static string buildNameString;
@@ -315,9 +316,15 @@ public static class BuildManager {
 	public static void PushItch(BuildSequence sequence, BuildData data) {
 		StringBuilder fileName = new StringBuilder(128);
 		StringBuilder args = new StringBuilder(128);
-		fileName.Append(Application.dataPath);
-		fileName.Append("/");
-		fileName.Append(butlerRelativePath);
+
+		string butlerPath = "";
+
+		butlerPath = Application.dataPath.Replace("/Assets", "/") + butlerRelativePath;
+		if (!File.Exists(butlerPath)) {
+			butlerPath = Application.dataPath.Replace("/Assets", "/") + butlerRelativePathAlt;
+		}
+
+		fileName.Append(butlerPath);
 
 		args.Append(" push \"");
 		args.Append(Application.dataPath);
