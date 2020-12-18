@@ -350,7 +350,7 @@ public static class BuildManager {
 		Process.Start("explorer.exe", "/select," + itemPath);
 	}
 
-	[MenuItem("Window/Custom/BuildManager/Download butler(itch.io)")]
+	[MenuItem("Window/BuildManager/Download butler(itch.io)")]
 	public static void DownloadButler() {
 		using (var client = new WebClient()) {
 			Debug.Log("Downloading butler...");
