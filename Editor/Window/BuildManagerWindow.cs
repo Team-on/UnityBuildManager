@@ -106,7 +106,7 @@ public class BuildManagerWindow : EditorWindow {
 			//Github data
 			GUILayout.Space(5);
 			EditorGUILayout.BeginHorizontal();
-			settings.githubToken = EditorGUILayout.TextField("Github token", settings.githubToken);
+			settings.GithubToken = EditorGUILayout.TextField("Github token", settings.GithubToken);
 			if (GUILayout.Button($"Generate", GUILayout.Width(100f)))
 				Application.OpenURL($"https://github.com/settings/tokens");
 			if (GUILayout.Button($"Docs", GUILayout.Width(100f)))

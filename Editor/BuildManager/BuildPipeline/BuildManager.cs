@@ -165,7 +165,7 @@ public static class BuildManager {
 				continue;
 
 			if (!string.IsNullOrEmpty(buildsPath[i])) {
-				if (string.IsNullOrEmpty(settings.githubToken) || string.IsNullOrEmpty(settings.githubUserName) || string.IsNullOrEmpty(settings.githubRepoName)) {
+				if (string.IsNullOrEmpty(settings.GithubToken) || string.IsNullOrEmpty(settings.githubUserName) || string.IsNullOrEmpty(settings.githubRepoName)) {
 					Debug.LogWarning($"Can't push github release. Required data is missing");
 					return;
 				}
@@ -414,7 +414,7 @@ public static class BuildManager {
 		fileName.Append(githubReleaseExe);
 
 		args.Append(" release ");
-		args.Append($"--security-token \"{settings.githubToken}\" ");
+		args.Append($"--security-token \"{settings.GithubToken}\" ");
 		args.Append($"--user {settings.githubUserName} ");
 		args.Append($"--repo {settings.githubRepoName} ");
 		args.Append($"--tag v{PlayerSettings.bundleVersion} ");
@@ -436,7 +436,7 @@ public static class BuildManager {
 		fileName.Append(githubReleaseExe);
 
 		args.Append(" upload ");
-		args.Append($"--security-token \"{settings.githubToken}\" ");
+		args.Append($"--security-token \"{settings.GithubToken}\" ");
 		args.Append($"--user {settings.githubUserName} ");
 		args.Append($"--auth-user {settings.githubUserName} ");
 		args.Append($"--repo {settings.githubRepoName} ");
