@@ -12,11 +12,9 @@ public class BuildSequenceReordableList {
 			const float enabledWidth = 15f;
 			const float space = 10f;
 			const float minNameWidth = 100f;
-			const float itchGameLinkWidth = 200;
-			const float labelWidth = 60;
-
+			
 			BuildSequence sequence = configsList[index];
-			var nameWidth = position.width - space * 5 - enabledWidth - itchGameLinkWidth - labelWidth;
+			var nameWidth = position.width - space * 3 - enabledWidth;
 			if (nameWidth < minNameWidth)
 				nameWidth = minNameWidth;
 
@@ -32,21 +30,13 @@ public class BuildSequenceReordableList {
 			position.width = nameWidth;
 			sequence.editorName = EditorGUI.TextField(position, sequence.editorName);
 
-			position.x += position.width + space;
-			position.width = labelWidth;
-			EditorGUI.LabelField(position, "Itch.io link");
-
-			position.x += position.width + space;
-			position.width = itchGameLinkWidth;
-			sequence.itchGameLink = EditorGUI.TextField(position, sequence.itchGameLink);
-
 			EditorGUI.EndDisabledGroup();
 		};
 
 		reorderableList.onAddDropdownCallback = (buttonRect, list) => {
 			var menu = new GenericMenu();
 
-			menu.AddItem(new GUIContent("Custom"), false, menuItemHandler, new BuildSequence("Custom", $"teamon/{BuildManager.GetProductName()}", new BuildData()));
+			menu.AddItem(new GUIContent("Custom"), false, menuItemHandler, new BuildSequence("Custom", new BuildData()));
 			menu.AddSeparator("");
 
 			string label = $"{PredefinedBuildConfigs.testingSequence.editorName}";
@@ -63,8 +53,8 @@ public class BuildSequenceReordableList {
 			label = $"{PredefinedBuildConfigs.releaseLocalZipSequence.editorName}";
 			menu.AddItem(new GUIContent(label), false, menuItemHandler, PredefinedBuildConfigs.releaseLocalZipSequence);
 
-			label = $"{PredefinedBuildConfigs.releaseLocalZipItchSequence.editorName}";
-			menu.AddItem(new GUIContent(label), false, menuItemHandler, PredefinedBuildConfigs.releaseLocalZipItchSequence);
+			label = $"{PredefinedBuildConfigs.releaseFullSequence.editorName}";
+			menu.AddItem(new GUIContent(label), false, menuItemHandler, PredefinedBuildConfigs.releaseFullSequence);
 
 
 			menu.AddSeparator("");

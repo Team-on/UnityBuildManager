@@ -9,6 +9,7 @@ public class BuildData : ICloneable {
 
 	public string outputRoot;
 	public string middlePath;
+	public string dirPathForPostProcess;
 
 	public bool isPassbyBuild = false; //Use it to simulate build and give to after build hooks previously build game
 
@@ -23,17 +24,14 @@ public class BuildData : ICloneable {
 	public bool isReleaseBuild;	// Maximum compressed build with Release IL2CPP
 
 	public bool needZip;
-	public string compressDirPath;
 
 	public bool needItchPush;
 	public string itchChannel;
-	public string itchDirPath;
 	public bool itchAddLastChangelogUpdateNameToVerison;
-	public string itchLastChangelogUpdateName;  //Fill from code
+
+	public bool needGithubPush;
 
 	//TODO: 
-	public bool useGithubActions;
-	public bool useUnityActions;
 	public bool needGamejolthPush;
 	public bool needSteamPush;
 	public bool needGoogleDrivePush;
@@ -59,20 +57,20 @@ public class BuildData : ICloneable {
 
 		outputRoot = "Builds/";
 		middlePath = "$NAME_$VERSION_$PLATFORM/$NAME_$VERSION/$NAME$EXECUTABLE";
+		dirPathForPostProcess = "$NAME_$VERSION_$PLATFORM";
 
 		isReleaseBuild = false;
 
 		needZip = false;
-		compressDirPath = "$NAME_$VERSION_$PLATFORM";
+		dirPathForPostProcess = "$NAME_$VERSION_$PLATFORM";
 
 		needItchPush = false;
 		itchChannel = "channel";
-		itchDirPath = "$NAME_$VERSION_$PLATFORM";
 		itchAddLastChangelogUpdateNameToVerison = true;
 
+		needGithubPush = false;
+
 		//TODO: 
-		useGithubActions = false;
-		useUnityActions = false;
 		needGamejolthPush = false;
 		needSteamPush = false;
 		needGoogleDrivePush = false;

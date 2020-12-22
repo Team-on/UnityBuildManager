@@ -9,7 +9,7 @@ public static class PredefinedBuildConfigs {
 
 	public static BuildSequence releaseLocalSequence;
 	public static BuildSequence releaseLocalZipSequence;
-	public static BuildSequence releaseLocalZipItchSequence;
+	public static BuildSequence releaseFullSequence;
 
 	public static BuildSequence passbySequence;
 
@@ -25,7 +25,7 @@ public static class PredefinedBuildConfigs {
 	};
 
 	public static BuildData[] androidData = new BuildData[] {
-		new BuildData(UnityEditor.BuildTargetGroup.Android, UnityEditor.BuildTarget.Android){ middlePath = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", itchDirPath = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", itchChannel = "android"},
+		new BuildData(UnityEditor.BuildTargetGroup.Android, UnityEditor.BuildTarget.Android){ middlePath = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", dirPathForPostProcess = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", itchChannel = "android"},
 	};
 
 	public static void Init() {
@@ -50,20 +50,18 @@ public static class PredefinedBuildConfigs {
 		for (int i = 0; i < dataOriginal.Count; ++i) {
 			data.Add(dataOriginal[i].Clone() as BuildData);
 			data[i].middlePath = data[i].middlePath.Replace("_$VERSION", "");
-			data[i].compressDirPath = data[i].compressDirPath.Replace("_$VERSION", "");
-			data[i].itchDirPath = data[i].itchDirPath.Replace("_$VERSION", "");
+			data[i].dirPathForPostProcess = data[i].dirPathForPostProcess.Replace("_$VERSION", "");
 		}
-		testingSequence = new BuildSequence("Testing", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		testingSequence = new BuildSequence("Testing", data.ToArray());
 		data.Clear();
 
 		for (int i = 0; i < dataOriginal.Count; ++i) {
 			data.Add(dataOriginal[i].Clone() as BuildData);
 			data[i].needZip = true;
 			data[i].middlePath = data[i].middlePath.Replace("_$VERSION", "");
-			data[i].compressDirPath = data[i].compressDirPath.Replace("_$VERSION", "");
-			data[i].itchDirPath = data[i].itchDirPath.Replace("_$VERSION", "");
+			data[i].dirPathForPostProcess = data[i].dirPathForPostProcess.Replace("_$VERSION", "");
 		}
-		testingSequenceZip = new BuildSequence("Testing + zip", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		testingSequenceZip = new BuildSequence("Testing + zip", data.ToArray());
 		data.Clear();
 	}
 
@@ -76,7 +74,7 @@ public static class PredefinedBuildConfigs {
 			data.Add(dataOriginal[i].Clone() as BuildData);
 			data[i].isReleaseBuild = true;
 		}
-		releaseLocalSequence = new BuildSequence("Release", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		releaseLocalSequence = new BuildSequence("Release", data.ToArray());
 		data.Clear();
 
 		for (int i = 0; i < dataOriginal.Count; ++i) {
@@ -84,7 +82,7 @@ public static class PredefinedBuildConfigs {
 			data[i].isReleaseBuild = true;
 			data[i].needZip = true;
 		}
-		releaseLocalZipSequence = new BuildSequence("Release + zip", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		releaseLocalZipSequence = new BuildSequence("Release + zip", data.ToArray());
 		data.Clear();
 
 		for (int i = 0; i < dataOriginal.Count; ++i) {
@@ -92,8 +90,9 @@ public static class PredefinedBuildConfigs {
 			data[i].isReleaseBuild = true;
 			data[i].needZip = true;
 			data[i].needItchPush = true;
+			data[i].needGithubPush = true;
 		}
-		releaseLocalZipItchSequence = new BuildSequence("Release full", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		releaseFullSequence = new BuildSequence("Release full", data.ToArray());
 		data.Clear();
 
 		for (int i = 0; i < dataOriginal.Count; ++i) {
@@ -102,8 +101,9 @@ public static class PredefinedBuildConfigs {
 			data[i].isPassbyBuild = true;
 			data[i].needZip = true;
 			data[i].needItchPush = true;
+			data[i].needGithubPush = true;
 		}
-		passbySequence = new BuildSequence("Passby local release", $"teamon/{BuildManager.GetProductName()}", data.ToArray());
+		passbySequence = new BuildSequence("Passby local release", data.ToArray());
 		data.Clear();
 	}
 }

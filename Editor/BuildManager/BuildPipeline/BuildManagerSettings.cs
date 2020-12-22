@@ -8,6 +8,12 @@ public class BuildManagerSettings : ScriptableObject{
 
 	public string scriptingDefineSymbols;
 
+	public string itchGameLink;
+
+	public string githubToken;
+	public string githubUserName;
+	public string githubRepoName;
+
 	public void CloneInto(BuildManagerSettings settings) {
 		scriptingDefineSymbols = settings.scriptingDefineSymbols;
 

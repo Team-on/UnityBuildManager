@@ -12,15 +12,22 @@ using Ionic.Zip;
 using Debug = UnityEngine.Debug;
 
 public static class BuildManager {
+	const string butlerDownloadPath = "https://broth.itch.ovh/butler/windows-386/LATEST/archive/default";
+	const string githubReleasesDownloadPath = "https://github.com/github-release/github-release/releases/download/v0.9.0/windows-amd64-github-release.zip";
+
 	const string butlerRelativePath = @"Editor/Butler/butler.exe";
+	const string githubReleasesRelativePath = @"Editor/Github/github-release.exe";
+
 	static DateTime usedDate;
 
 	static string buildNameString;
+	static string buildNameStringNoVer;
 	static string[] buildsPath;
 
 	public static void RunBuildSequnce(BuildManagerSettings settings, BuildSequence sequence, ChangelogData changelog) {
 		// Start init
 		buildNameString = $"{PlayerSettings.bundleVersion} - {changelog.updateName}";
+		buildNameStringNoVer = changelog.updateName;
 #if GAME_TEMPLATE
 		TemplateGameManager.InstanceEditor.buildNameString = buildNameString;
 		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
@@ -33,8 +40,11 @@ public static class BuildManager {
 		
 		Build(settings, sequence);
 		PostBuild(sequence);
+
 		Compress(sequence);
-		ItchioPush(sequence, changelog);
+
+		ItchioPush(settings, sequence, changelog);
+		GithubPush(settings, sequence, changelog);
 
 		Debug.Log($"End building all. Elapsed time: {string.Format("{0:mm\\:ss}", DateTime.Now - startTime)}");
 
@@ -122,25 +132,53 @@ public static class BuildManager {
 			}
 
 			if (!string.IsNullOrEmpty(buildsPath[i]))
-				BaseCompress(sequence.builds[i].outputRoot + GetPathWithVars(sequence.builds[i], sequence.builds[i].compressDirPath));
+				BaseCompress(sequence.builds[i].outputRoot + GetPathWithVars(sequence.builds[i], sequence.builds[i].dirPathForPostProcess));
 			else
 				Debug.LogWarning($"[Compressing] Can't find build for {GetBuildTargetExecutable(sequence.builds[i].target)}");
 		}
 	}
 
-	static void ItchioPush(BuildSequence sequence, ChangelogData changelog) {
+	static void ItchioPush(BuildManagerSettings settings, BuildSequence sequence, ChangelogData changelog) {
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
-			if (!sequence.builds[i].needItchPush || !sequence.builds[i].isEnabled)
+			if (!sequence.builds[i].isEnabled || !sequence.builds[i].needItchPush)
 				continue;
 
 			if (!string.IsNullOrEmpty(buildsPath[i])) {
-				if (sequence.builds[i].itchAddLastChangelogUpdateNameToVerison && !string.IsNullOrEmpty(changelog?.updateName)) {
-					sequence.builds[i].itchLastChangelogUpdateName = buildNameString;
+				if (string.IsNullOrEmpty(settings.itchGameLink)) {
+					Debug.LogWarning($"Can't push itch.io. Required data is missing");
+					return;
 				}
-				PushItch(sequence, sequence.builds[i]);
+
+				PushItch(settings, sequence, sequence.builds[i]);
 			}
 			else {
 				Debug.LogWarning($"[Itch.io push] Can't find build for {GetBuildTargetExecutable(sequence.builds[i].target)}");
+			}
+		}
+	}
+
+	static void GithubPush(BuildManagerSettings settings, BuildSequence sequence, ChangelogData changelog) {
+
+		bool isCreateRelease = false;
+		for (byte i = 0; i < sequence.builds.Count; ++i) {
+			if (!sequence.builds[i].isEnabled || !sequence.builds[i].needGithubPush)
+				continue;
+
+			if (!string.IsNullOrEmpty(buildsPath[i])) {
+				if (string.IsNullOrEmpty(settings.githubToken) || string.IsNullOrEmpty(settings.githubUserName) || string.IsNullOrEmpty(settings.githubRepoName)) {
+					Debug.LogWarning($"Can't push github release. Required data is missing");
+					return;
+				}
+
+				if (!isCreateRelease) {
+					isCreateRelease = true;
+					CreateGitHubRelease(settings);
+				}
+
+				PushGithub(settings, sequence, sequence.builds[i]);
+			}
+			else {
+				Debug.LogWarning($"[GitHub push] Can't find build for {GetBuildTargetExecutable(sequence.builds[i].target)}");
 			}
 		}
 	}
@@ -158,6 +196,25 @@ public static class BuildManager {
 		s = s.Replace("$DAY", $"{usedDate.Date.Day}");
 		s = s.Replace("$TIME", $"{usedDate.Hour}_{usedDate.Minute}");
 		s = s.Replace("$EXECUTABLE", GetBuildTargetExecutable(data.target));
+		return s;
+	}
+
+	public static string GetPathWithVarsForZip(BuildData data, string s) {
+		s = s.Replace("$NAME", GetProductName());
+		s = s.Replace("$PLATFORM", ConvertBuildTargetToString(data.target));
+		s = s.Replace("$VERSION", PlayerSettings.bundleVersion);
+		s = s.Replace("$DATESHORT", $"{usedDate.Date.Year % 100}_{usedDate.Date.Month}_{usedDate.Date.Day}");
+		s = s.Replace("$YEARSHORT", $"{usedDate.Date.Year % 100}");
+		s = s.Replace("$DATE", $"{usedDate.Date.Year}_{usedDate.Date.Month}_{usedDate.Date.Day}");
+		s = s.Replace("$YEAR", $"{usedDate.Date.Year}");
+		s = s.Replace("$MONTH", $"{usedDate.Date.Month}");
+		s = s.Replace("$DAY", $"{usedDate.Date.Day}");
+		s = s.Replace("$TIME", $"{usedDate.Hour}_{usedDate.Minute}");
+
+		if (s.Contains("$EXECUTABLE"))
+			s = s.Replace("$EXECUTABLE", GetBuildTargetExecutable(data.target));
+		else
+			s += ".zip";
 		return s;
 	}
 
@@ -313,7 +370,7 @@ public static class BuildManager {
 		}
 	}
 
-	public static void PushItch(BuildSequence sequence, BuildData data) {
+	public static void PushItch(BuildManagerSettings settings, BuildSequence sequence, BuildData data) {
 		StringBuilder fileName = new StringBuilder(128);
 		StringBuilder args = new StringBuilder(128);
 
@@ -329,12 +386,12 @@ public static class BuildManager {
 		args.Append(" push \"");
 		args.Append(Application.dataPath);
 		args.Append("/../");
-		args.Append(data.outputRoot + GetPathWithVars(data, data.itchDirPath));
+		args.Append(data.outputRoot + GetPathWithVars(data, data.dirPathForPostProcess));
 		args.Append("\" ");
 
-		args.Append($"{sequence.itchGameLink}:{data.itchChannel} ");
-		if (data.itchAddLastChangelogUpdateNameToVerison && !string.IsNullOrEmpty(data.itchLastChangelogUpdateName)) {
-			args.Append($"--userversion \"{data.itchLastChangelogUpdateName}\" ");
+		args.Append($"{settings.itchGameLink}:{data.itchChannel} ");
+		if (data.itchAddLastChangelogUpdateNameToVerison && !string.IsNullOrEmpty(buildNameString)) {
+			args.Append($"--userversion \"{buildNameString}\" ");
 		}
 		else {
 			args.Append($"--userversion \"{PlayerSettings.bundleVersion}\" ");
@@ -343,10 +400,85 @@ public static class BuildManager {
 		Debug.Log(fileName.ToString() + args.ToString());
 		Process.Start(fileName.ToString(), args.ToString());
 	}
+
+	public static void CreateGitHubRelease(BuildManagerSettings settings) {
+		StringBuilder fileName = new StringBuilder(128);
+		StringBuilder args = new StringBuilder(128);
+
+		string githubReleaseExe = Application.dataPath + "/" + githubReleasesRelativePath;
+		if (!File.Exists(githubReleaseExe)) {
+			Debug.LogWarning("GitHub release not found.");
+			DownloadGithubRelease();
+		}
+
+		fileName.Append(githubReleaseExe);
+
+		args.Append(" release ");
+		args.Append($"--security-token \"{settings.githubToken}\" ");
+		args.Append($"--user {settings.githubUserName} ");
+		args.Append($"--repo {settings.githubRepoName} ");
+		args.Append($"--tag v{PlayerSettings.bundleVersion} ");
+		args.Append($"--name \"{(!string.IsNullOrEmpty(buildNameStringNoVer) ? buildNameStringNoVer : PlayerSettings.bundleVersion.ToString())}\" ");
+		//TODO:
+		args.Append($"--description \"Changelog, readme, etc\" ");
+
+
+		Debug.Log(fileName.ToString() + args.ToString());
+		Process.Start(fileName.ToString(), args.ToString());
+	}
+
+	public static void PushGithub(BuildManagerSettings settings, BuildSequence sequence, BuildData data) {
+		StringBuilder fileName = new StringBuilder(128);
+		StringBuilder args = new StringBuilder(128);
+
+		string githubReleaseExe = Application.dataPath + "/" + githubReleasesRelativePath;
+
+		fileName.Append(githubReleaseExe);
+
+		args.Append(" upload ");
+		args.Append($"--security-token \"{settings.githubToken}\" ");
+		args.Append($"--user {settings.githubUserName} ");
+		args.Append($"--auth-user {settings.githubUserName} ");
+		args.Append($"--repo {settings.githubRepoName} ");
+		args.Append($"--tag v{PlayerSettings.bundleVersion} ");
+		args.Append($"--name \"{GetPathWithVars(data, data.dirPathForPostProcess)}\" ");    //download file name
+		args.Append($"--label \"{GetPathWithVars(data, data.dirPathForPostProcess)}\" ");   //name in releases
+		args.Append($"--file  \"{Path.Combine(Application.dataPath, "..", data.outputRoot, GetPathWithVarsForZip(data, data.dirPathForPostProcess)).Replace("\\", "/")}\" ");
+		args.Append($"--replace ");
+
+		Debug.Log(fileName.ToString() + args.ToString());
+
+		ProcessStartInfo info = new ProcessStartInfo(fileName.ToString(), args.ToString()) {
+			UseShellExecute = false,
+			RedirectStandardOutput = true,
+			RedirectStandardError = true
+		};
+		Process.Start(info);
+	}
 	#endregion
 
 	static void ShowExplorer(string itemPath) {
 		itemPath = itemPath.Replace(@"/", @"\");   // explorer doesn't like front slashes
+
+		bool findFile = false;
+		DirectoryInfo di = new DirectoryInfo(itemPath);
+		foreach (FileInfo fi in di.GetFiles()) {
+			if (fi.Name != "." && fi.Name != ".." && fi.Name != "Thumbs.db") {
+				itemPath = fi.FullName;
+				findFile = true;
+				break;
+			}
+		}
+
+		if (!findFile) {
+			foreach (DirectoryInfo fi in di.GetDirectories()) {
+				if (fi.Name != "." && fi.Name != ".." && fi.Name != "Thumbs.db") {
+					itemPath = fi.FullName;
+					break;
+				}
+			}
+		}
+
 		Process.Start("explorer.exe", "/select," + itemPath);
 	}
 
@@ -359,16 +491,9 @@ public static class BuildManager {
 			string butlerDirPath = butlerPath.Replace("butler.exe", "");
 			string zipPath = butlerPath.Replace("butler.exe", "butler.zip");
 
-			string[] dirs = ("Assets/" + butlerRelativePath).Split('/');
-			string allPath = dirs[0];
-			for (int i = 1; i < dirs.Length - 1; ++i) {
-				if (!AssetDatabase.IsValidFolder(allPath + "/" + dirs[i])) {
-					AssetDatabase.CreateFolder(allPath, dirs[i]);
-				}
-				allPath = allPath + "/" + dirs[i];
-			}
+			CreateAllFodersBeforePath(butlerRelativePath);
 
-			client.DownloadFile("https://broth.itch.ovh/butler/windows-386/LATEST/archive/default", zipPath);
+			client.DownloadFile(butlerDownloadPath, zipPath);
 
 			using (ZipFile zip = ZipFile.Read(zipPath)) {
 				foreach (ZipEntry e in zip) {
@@ -377,6 +502,42 @@ public static class BuildManager {
 			}
 
 			File.Delete(zipPath);
+		}
+	}
+
+	[MenuItem("Window/BuildManager/Download github-release(github.com)")]
+	public static void DownloadGithubRelease() {
+		using (var client = new WebClient()) {
+			Debug.Log("Downloading github-release...");
+
+			string exePath = Application.dataPath + "/" + githubReleasesRelativePath;
+			string dirPath = exePath.Replace("github-release.exe", "");
+			string zipPath = exePath.Replace("github-release.exe", "windows-amd64-github-release.zip");
+
+			CreateAllFodersBeforePath(githubReleasesRelativePath);
+
+			client.DownloadFile(githubReleasesDownloadPath, zipPath);
+
+			using (ZipFile zip = ZipFile.Read(zipPath)) {
+				foreach (ZipEntry e in zip) {
+					e.Extract(dirPath, ExtractExistingFileAction.OverwriteSilently);
+				}
+			}
+
+			File.Copy(Path.Combine(dirPath, "bin", "windows", "amd64", "github-release.exe"), exePath);
+			Directory.Delete(Path.Combine(dirPath, "bin"), true);
+			File.Delete(zipPath);
+		}
+	}
+
+	static void CreateAllFodersBeforePath(string path) {
+		string[] dirs = ("Assets/" + path).Split('/');
+		string allPath = dirs[0];
+		for (int i = 1; i < dirs.Length - 1; ++i) {
+			if (!AssetDatabase.IsValidFolder(allPath + "/" + dirs[i])) {
+				AssetDatabase.CreateFolder(allPath, dirs[i]);
+			}
+			allPath = allPath + "/" + dirs[i];
 		}
 	}
 }

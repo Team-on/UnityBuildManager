@@ -9,18 +9,16 @@ public class BuildSequence : ICloneable {
 	public bool isEnabled;
 
 	public string editorName;
-	public string itchGameLink;
 
 	public string scriptingDefineSymbolsOverride;
 
 	public List<BuildData> builds = new List<BuildData>() { new BuildData() };
 
-	public BuildSequence() : this("New build sequence", $"teamon/gametemplate", new BuildData()) {
+	public BuildSequence() : this("New build sequence", new BuildData()) {
 	}
 
-	public BuildSequence(string editorName, string itchGameLink, params BuildData[] builds) {
+	public BuildSequence(string editorName, params BuildData[] builds) {
 		this.editorName = editorName;
-		this.itchGameLink = itchGameLink;
 		this.builds = new List<BuildData>(builds);
 
 		scriptingDefineSymbolsOverride = "";

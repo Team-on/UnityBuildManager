@@ -9,13 +9,14 @@ public class BuildManagerWindow : EditorWindow {
 	static string settingsPath;
 	static BuildManagerSettings settings;
 
+	static bool globalDataFoldout = true;
+
 	static ChangelogData changelog;
 	static bool changelogFoldout = false;
 	static Vector2 scrollPosChangelog = Vector2.zero;
 
 	static Vector2 scrollPosSequence = Vector2.zero;
-	static bool zipFoldout = false;
-	static bool itchFoldout = false;
+	static bool postBuildFoldout = false;
 
 	static ReorderableList sequenceList;
 	static ReorderableList buildList;
@@ -47,58 +48,93 @@ public class BuildManagerWindow : EditorWindow {
 		DrawSelectedSequenceData();
 
 		EditorGUILayout.EndScrollView();
+		EditorUtility.SetDirty(settings);
 	}
 
 	#region Main Drawers
 	void DrawGlobalBuildData() {
-		PlayerSettings.bundleVersion = EditorGUILayout.TextField("Version", PlayerSettings.bundleVersion);
-		PlayerSettings.Android.bundleVersionCode = EditorGUILayout.IntField("Android bundle version", PlayerSettings.Android.bundleVersionCode);
+		globalDataFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(globalDataFoldout, "Global data");
+		if (globalDataFoldout) {
+			++EditorGUI.indentLevel;
 
-		EditorGUILayout.BeginHorizontal();
-		settings.scriptingDefineSymbols = EditorGUILayout.TextField("Scripting Defines", settings.scriptingDefineSymbols);
-		if (GUILayout.Button($"Set defines", GUILayout.Width(100f))) {
-			PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), settings.scriptingDefineSymbols);
-			//string.Concat(settings.scriptingDefineSymbols, ";", sequence.scriptingDefineSymbolsOverride, ";", data.scriptingDefineSymbolsOverride), 
-		}
-		EditorGUILayout.EndHorizontal();
+			//Versions
+			PlayerSettings.bundleVersion = EditorGUILayout.TextField("Version", PlayerSettings.bundleVersion);
+			PlayerSettings.Android.bundleVersionCode = EditorGUILayout.IntField("Android bundle version", PlayerSettings.Android.bundleVersionCode);
 
-		EditorGUILayout.Space(20);
-	}
-
-	void DrawBuildButtons() {
-		if ((settings?.sequences?.Count ?? 0) != 0) {
-			int enabledSequence = 0;
-			foreach (var sequence in settings.sequences)
-				if(sequence.isEnabled)
-					++enabledSequence;
-
-			if (enabledSequence == 0)
-				return;
-			
-			EditorGUILayout.Space(20);
-			Color prevColor = GUI.backgroundColor;
-			GUI.backgroundColor = new Color(0.773f, 0.345098f, 0.345098f);
-
-			EditorGUILayout.LabelField("Start build sequence(they red not becouse error, but becouse build stuck your pc if you accidentaly press it)");
-			EditorGUILayout.LabelField("Don't forget to manually download new version of polyglot localization if you want to update it");
-
+			//Defines
+			GUILayout.Space(5);
 			EditorGUILayout.BeginHorizontal();
-			for(int i = 0; i < settings.sequences.Count; ++i) {
-				BuildSequence sequence = settings.sequences[i];
+			settings.scriptingDefineSymbols = EditorGUILayout.TextField("Scripting Defines", settings.scriptingDefineSymbols);
+			if (GUILayout.Button($"Set defines", GUILayout.Width(100f)))
+				PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), settings.scriptingDefineSymbols);
+			EditorGUILayout.EndHorizontal();
 
-				if(i != 0 && i % 3 == 0) {
-					EditorGUILayout.EndHorizontal();
-					EditorGUILayout.BeginHorizontal();
-				}
-
-				if (sequence.isEnabled && GUILayout.Button($"Build {sequence.editorName}")) {
-					BuildManager.RunBuildSequnce(settings, sequence, changelog);
-				}
+			//Itch data
+			GUILayout.Space(5);
+			EditorGUILayout.BeginHorizontal();
+			settings.itchGameLink = EditorGUILayout.TextField("Itch.io link", settings.itchGameLink);
+			if (string.IsNullOrEmpty(settings.itchGameLink))
+				settings.itchGameLink = $"teamon/{BuildManager.GetProductName()}";
+			if (GUILayout.Button($"Open", GUILayout.Width(100f))) {
+				int slashId = settings.itchGameLink.IndexOf("/");
+				string name = settings.itchGameLink.Substring(0, slashId);
+				string game = settings.itchGameLink.Substring(slashId + 1);
+				Application.OpenURL($"https://{name}.itch.io/{game}");
+			}
+			if (GUILayout.Button($"Docs", GUILayout.Width(100f))) {
+				Application.OpenURL($"https://itch.io/docs/butler/pushing.html");
 			}
 			EditorGUILayout.EndHorizontal();
 
-			GUI.backgroundColor = prevColor;
+			//Gamejolt data
+			//GUILayout.Space(5);
+			//EditorGUILayout.BeginHorizontal();
+			//settings.itchGameLink = EditorGUILayout.TextField("Game Jolt link", settings.itchGameLink);
+			//if (string.IsNullOrEmpty(settings.itchGameLink))
+			//	settings.itchGameLink = $"teamon/{BuildManager.GetProductName()}";
+			//if (GUILayout.Button($"Open", GUILayout.Width(100f))) {
+			//	int slashId = settings.itchGameLink.IndexOf("/");
+			//	string name = settings.itchGameLink.Substring(0, slashId);
+			//	string game = settings.itchGameLink.Substring(slashId + 1);
+			//	Application.OpenURL($"https://{name}.itch.io/{game}");
+			//}
+			//if (GUILayout.Button($"Docs", GUILayout.Width(100f))) {
+			//	Application.OpenURL($"https://github.com/gamejolt/cli");
+			//}
+			//EditorGUILayout.EndHorizontal();
+
+			//Github data
+			GUILayout.Space(5);
+			EditorGUILayout.BeginHorizontal();
+			settings.githubToken = EditorGUILayout.TextField("Github token", settings.githubToken);
+			if (GUILayout.Button($"Generate", GUILayout.Width(100f)))
+				Application.OpenURL($"https://github.com/settings/tokens");
+			if (GUILayout.Button($"Docs", GUILayout.Width(100f)))
+				Application.OpenURL($"https://github.com/github-release/github-release");
+			EditorGUILayout.EndHorizontal();
+
+			EditorGUILayout.BeginHorizontal();
+			settings.githubUserName = EditorGUILayout.TextField("Github user name", settings.githubUserName);
+			if (string.IsNullOrEmpty(settings.githubUserName))
+				settings.githubUserName = $"Team-on";
+			if (GUILayout.Button($"Open", GUILayout.Width(100f)))
+				Application.OpenURL($"https://github.com/{settings.githubUserName}");
+			EditorGUILayout.EndHorizontal();
+
+			EditorGUILayout.BeginHorizontal();
+			settings.githubRepoName = EditorGUILayout.TextField("Github repo name", settings.githubRepoName);
+			if (string.IsNullOrEmpty(settings.githubRepoName))
+				settings.githubRepoName = BuildManager.GetProductName();
+			if (GUILayout.Button($"Open", GUILayout.Width(100f)))
+				Application.OpenURL($"https://github.com/{settings.githubUserName}/{settings.githubRepoName}");
+			EditorGUILayout.EndHorizontal();
+
+
+			--EditorGUI.indentLevel;
 		}
+		EditorGUILayout.EndFoldoutHeaderGroup();
+
+		EditorGUILayout.Space(20);
 	}
 
 	void DrawChangelogInfo() {
@@ -128,6 +164,42 @@ public class BuildManagerWindow : EditorWindow {
 		}
 	}
 
+	void DrawBuildButtons() {
+		if ((settings?.sequences?.Count ?? 0) != 0) {
+			int enabledSequence = 0;
+			foreach (var sequence in settings.sequences)
+				if (sequence.isEnabled)
+					++enabledSequence;
+
+			if (enabledSequence == 0)
+				return;
+
+			EditorGUILayout.Space(20);
+			Color prevColor = GUI.backgroundColor;
+			GUI.backgroundColor = new Color(0.773f, 0.345098f, 0.345098f);
+
+			EditorGUILayout.LabelField("Start build sequence(they red not becouse error, but becouse build stuck your pc if you accidentaly press it)");
+			EditorGUILayout.LabelField("Don't forget to manually download new version of polyglot localization if you want to update it");
+
+			EditorGUILayout.BeginHorizontal();
+			for (int i = 0; i < settings.sequences.Count; ++i) {
+				BuildSequence sequence = settings.sequences[i];
+
+				if (i != 0 && i % 3 == 0) {
+					EditorGUILayout.EndHorizontal();
+					EditorGUILayout.BeginHorizontal();
+				}
+
+				if (sequence.isEnabled && GUILayout.Button($"Build {sequence.editorName}")) {
+					BuildManager.RunBuildSequnce(settings, sequence, changelog);
+				}
+			}
+			EditorGUILayout.EndHorizontal();
+
+			GUI.backgroundColor = prevColor;
+		}
+	}
+
 	void DrawSequenceList() {
 		if (sequenceList == null) {
 			PredefinedBuildConfigs.Init();
@@ -147,9 +219,6 @@ public class BuildManagerWindow : EditorWindow {
 				PlayerSettings.SetScriptingDefineSymbolsForGroup(BuildPipeline.GetBuildTargetGroup(EditorUserBuildSettings.activeBuildTarget), string.Concat(settings.scriptingDefineSymbols, ";", selected.scriptingDefineSymbolsOverride));
 			}
 			EditorGUILayout.EndHorizontal();
-
-			//selected.editorName = EditorGUILayout.TextField("Sequence name", selected.editorName);
-			//selected.itchGameLink = EditorGUILayout.TextField("Itch.io link", selected.itchGameLink);
 		}
 	}
 
@@ -183,6 +252,7 @@ public class BuildManagerWindow : EditorWindow {
 		EditorGUILayout.Space(20);
 		selected.outputRoot = EditorGUILayout.TextField("Output root", selected.outputRoot);
 		selected.middlePath = EditorGUILayout.TextField("Middle path", selected.middlePath);
+		selected.dirPathForPostProcess = EditorGUILayout.TextField("Dir path", selected.dirPathForPostProcess);
 
 		EditorGUILayout.BeginHorizontal();
 		selected.scriptingDefineSymbolsOverride = EditorGUILayout.TextField("Defines build override", selected.scriptingDefineSymbolsOverride);
@@ -191,45 +261,27 @@ public class BuildManagerWindow : EditorWindow {
 		}
 		EditorGUILayout.EndHorizontal();
 
-		//EditorGUILayout.BeginHorizontal();
-		//EditorGUILayout.LabelField("Build Target Group", GUILayout.MinWidth(0));
-		//selected.targetGroup = (BuildTargetGroup)EditorGUILayout.EnumPopup(selected.targetGroup);
-		//EditorGUILayout.EndHorizontal();
-
-		//EditorGUILayout.BeginHorizontal();
-		//EditorGUILayout.LabelField("Build Target", GUILayout.MinWidth(0));
-		//selected.target = (BuildTarget)EditorGUILayout.EnumPopup(selected.target);
-		//EditorGUILayout.EndHorizontal();
-
-		//EditorGUILayout.BeginHorizontal();
-		//EditorGUILayout.LabelField("Build Options", GUILayout.MinWidth(0));
-		//selected.options = (BuildOptions)EditorGUILayout.EnumFlagsField(selected.options);
-		//EditorGUILayout.EndHorizontal();
-		//EditorGUILayout.Space(20);
-
-
 		EditorGUILayout.Space(20);
-		zipFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(zipFoldout, "7zip");
-		if (zipFoldout) {
+		postBuildFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(postBuildFoldout, "Post build processing");
+		if (postBuildFoldout) {
 			++EditorGUI.indentLevel;
 			selected.needZip = EditorGUILayout.Toggle("Compress", selected.needZip);
-			selected.compressDirPath = EditorGUILayout.TextField("Dir path", selected.compressDirPath);
-			--EditorGUI.indentLevel;
-		}
-		EditorGUILayout.EndFoldoutHeaderGroup();
+			selected.needGithubPush = EditorGUILayout.Toggle("Push to github releases", selected.needGithubPush);
+			if (selected.needGithubPush && !selected.needZip) {
+				selected.needZip = true;
+				Debug.Log(".zip must be created before pushing to GitHub releases");
+			}
 
-		itchFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(itchFoldout, "itch.io");
-		if (itchFoldout) {
+			EditorGUILayout.LabelField("itch.io:");
 			++EditorGUI.indentLevel;
 			selected.needItchPush = EditorGUILayout.Toggle("Push to itch.io", selected.needItchPush);
-			selected.itchDirPath = EditorGUILayout.TextField("Dir path", selected.itchDirPath);
 			selected.itchChannel = EditorGUILayout.TextField("Channel", selected.itchChannel);
 			selected.itchAddLastChangelogUpdateNameToVerison = EditorGUILayout.Toggle("Add Changelog Update Name To Verison", selected.itchAddLastChangelogUpdateNameToVerison);
 			--EditorGUI.indentLevel;
+
+			--EditorGUI.indentLevel;
 		}
 		EditorGUILayout.EndFoldoutHeaderGroup();
-
-		EditorUtility.SetDirty(settings);
 	}
 	#endregion
 
@@ -262,7 +314,7 @@ public class BuildManagerWindow : EditorWindow {
 		//Cant find settings. Create new
 		if (settings == null) {
 			BuildManagerSettings defaultSettings = AssetDatabase.LoadAssetAtPath<BuildManagerSettings>(AssetDatabase.GUIDToAssetPath(AssetDatabase.FindAssets("t:BuildManagerSettings", new string[] { "Packages" })[0]));
-			
+
 			settings = (BuildManagerSettings)ScriptableObject.CreateInstance(typeof(BuildManagerSettings));
 			settings.CloneInto(defaultSettings);
 
