@@ -37,7 +37,10 @@ public static class BuildManager {
 
 		Debug.Log("Start building all");
 		DateTime startTime = DateTime.Now;
-		
+
+		//Crete release here, because build's not get pushed
+		CreateGitHubReleaseIfNeeded(settings, sequence);
+
 		Build(settings, sequence);
 		PostBuild(sequence);
 
@@ -158,8 +161,6 @@ public static class BuildManager {
 	}
 
 	static void GithubPush(BuildManagerSettings settings, BuildSequence sequence, ChangelogData changelog) {
-
-		bool isCreateRelease = false;
 		for (byte i = 0; i < sequence.builds.Count; ++i) {
 			if (!sequence.builds[i].isEnabled || !sequence.builds[i].needGithubPush)
 				continue;
@@ -168,11 +169,6 @@ public static class BuildManager {
 				if (string.IsNullOrEmpty(settings.GithubToken) || string.IsNullOrEmpty(settings.githubUserName) || string.IsNullOrEmpty(settings.githubRepoName)) {
 					Debug.LogWarning($"Can't push github release. Required data is missing");
 					return;
-				}
-
-				if (!isCreateRelease) {
-					isCreateRelease = true;
-					CreateGitHubRelease(settings);
 				}
 
 				PushGithub(settings, sequence, sequence.builds[i]);
@@ -351,7 +347,7 @@ public static class BuildManager {
 		return summary.result == BuildResult.Succeeded ? buildPath : "";
 	}
 
-	public static void BaseCompress(string dirPath) {
+	static void BaseCompress(string dirPath) {
 		using (ZipFile zip = new ZipFile()) {
 			DateTime startTime = DateTime.Now;
 			if (Directory.Exists(dirPath))
@@ -370,7 +366,7 @@ public static class BuildManager {
 		}
 	}
 
-	public static void PushItch(BuildManagerSettings settings, BuildSequence sequence, BuildData data) {
+	static void PushItch(BuildManagerSettings settings, BuildSequence sequence, BuildData data) {
 		StringBuilder fileName = new StringBuilder(128);
 		StringBuilder args = new StringBuilder(128);
 
@@ -401,7 +397,22 @@ public static class BuildManager {
 		Process.Start(fileName.ToString(), args.ToString());
 	}
 
-	public static void CreateGitHubRelease(BuildManagerSettings settings) {
+	static void CreateGitHubReleaseIfNeeded(BuildManagerSettings settings, BuildSequence sequence) {
+		for (byte i = 0; i < sequence.builds.Count; ++i) {
+			if (!sequence.builds[i].isEnabled || !sequence.builds[i].needGithubPush)
+				continue;
+
+			if (string.IsNullOrEmpty(settings.GithubToken) || string.IsNullOrEmpty(settings.githubUserName) || string.IsNullOrEmpty(settings.githubRepoName)) {
+				Debug.LogWarning($"Can't create github release. Required data is missing");
+				return;
+			}
+
+			CreateGitHubRelease(settings);
+			break;
+		}
+	}
+
+	static void CreateGitHubRelease(BuildManagerSettings settings) {
 		StringBuilder fileName = new StringBuilder(128);
 		StringBuilder args = new StringBuilder(128);
 
@@ -412,7 +423,8 @@ public static class BuildManager {
 		}
 
 		fileName.Append(githubReleaseExe);
-
+		//TODO: wait untill release created
+		//it not pushed, if you not wait
 		args.Append(" release ");
 		args.Append($"--security-token \"{settings.GithubToken}\" ");
 		args.Append($"--user {settings.githubUserName} ");
@@ -427,7 +439,7 @@ public static class BuildManager {
 		Process.Start(fileName.ToString(), args.ToString());
 	}
 
-	public static void PushGithub(BuildManagerSettings settings, BuildSequence sequence, BuildData data) {
+	static void PushGithub(BuildManagerSettings settings, BuildSequence sequence, BuildData data) {
 		StringBuilder fileName = new StringBuilder(128);
 		StringBuilder args = new StringBuilder(128);
 
@@ -457,6 +469,7 @@ public static class BuildManager {
 	}
 	#endregion
 
+	#region Helpers
 	static void ShowExplorer(string itemPath) {
 		itemPath = itemPath.Replace(@"/", @"\");   // explorer doesn't like front slashes
 
@@ -482,6 +495,19 @@ public static class BuildManager {
 		Process.Start("explorer.exe", "/select," + itemPath);
 	}
 
+	static void CreateAllFodersBeforePath(string path) {
+		string[] dirs = ("Assets/" + path).Split('/');
+		string allPath = dirs[0];
+		for (int i = 1; i < dirs.Length - 1; ++i) {
+			if (!AssetDatabase.IsValidFolder(allPath + "/" + dirs[i])) {
+				AssetDatabase.CreateFolder(allPath, dirs[i]);
+			}
+			allPath = allPath + "/" + dirs[i];
+		}
+	}
+	#endregion
+
+	#region Download CLI
 	[MenuItem("Window/BuildManager/Download butler(itch.io)")]
 	public static void DownloadButler() {
 		using (var client = new WebClient()) {
@@ -529,15 +555,5 @@ public static class BuildManager {
 			File.Delete(zipPath);
 		}
 	}
-
-	static void CreateAllFodersBeforePath(string path) {
-		string[] dirs = ("Assets/" + path).Split('/');
-		string allPath = dirs[0];
-		for (int i = 1; i < dirs.Length - 1; ++i) {
-			if (!AssetDatabase.IsValidFolder(allPath + "/" + dirs[i])) {
-				AssetDatabase.CreateFolder(allPath, dirs[i]);
-			}
-			allPath = allPath + "/" + dirs[i];
-		}
-	}
+	#endregion
 }
