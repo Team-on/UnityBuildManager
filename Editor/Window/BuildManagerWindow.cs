@@ -86,23 +86,6 @@ public class BuildManagerWindow : EditorWindow {
 			}
 			EditorGUILayout.EndHorizontal();
 
-			//Gamejolt data
-			//GUILayout.Space(5);
-			//EditorGUILayout.BeginHorizontal();
-			//settings.itchGameLink = EditorGUILayout.TextField("Game Jolt link", settings.itchGameLink);
-			//if (string.IsNullOrEmpty(settings.itchGameLink))
-			//	settings.itchGameLink = $"teamon/{BuildManager.GetProductName()}";
-			//if (GUILayout.Button($"Open", GUILayout.Width(100f))) {
-			//	int slashId = settings.itchGameLink.IndexOf("/");
-			//	string name = settings.itchGameLink.Substring(0, slashId);
-			//	string game = settings.itchGameLink.Substring(slashId + 1);
-			//	Application.OpenURL($"https://{name}.itch.io/{game}");
-			//}
-			//if (GUILayout.Button($"Docs", GUILayout.Width(100f))) {
-			//	Application.OpenURL($"https://github.com/gamejolt/cli");
-			//}
-			//EditorGUILayout.EndHorizontal();
-
 			//Github data
 			GUILayout.Space(5);
 			EditorGUILayout.BeginHorizontal();
@@ -134,7 +117,8 @@ public class BuildManagerWindow : EditorWindow {
 		}
 		EditorGUILayout.EndFoldoutHeaderGroup();
 
-		EditorGUILayout.Space(20);
+		if(globalDataFoldout)
+			EditorGUILayout.Space(20);
 	}
 
 	void DrawChangelogInfo() {
@@ -156,6 +140,9 @@ public class BuildManagerWindow : EditorWindow {
 		if (isChanged)
 			ChangelogData.SaveChangelog(changelog);
 
+		if(changelogFoldout)
+			EditorGUILayout.Space(20);
+
 		string DrawStringField(string label, string text) {
 			tmpString = EditorGUILayout.TextField(label, text);
 			if (text != tmpString)
@@ -174,7 +161,6 @@ public class BuildManagerWindow : EditorWindow {
 			if (enabledSequence == 0)
 				return;
 
-			EditorGUILayout.Space(20);
 			Color prevColor = GUI.backgroundColor;
 			GUI.backgroundColor = new Color(0.773f, 0.345098f, 0.345098f);
 
@@ -285,6 +271,7 @@ public class BuildManagerWindow : EditorWindow {
 	}
 	#endregion
 
+	#region Loaders
 	static void LoadSettings() {
 		settingsPath = PlayerPrefs.GetString(SETTINGS_PATH_KEY, "");
 		settings = null;
@@ -328,6 +315,9 @@ public class BuildManagerWindow : EditorWindow {
 		changelog = ChangelogData.LoadChangelog();
 	}
 
+	#endregion
+
+	#region Callbacks
 	static void OnSequenceSelectionChanged(ReorderableList list) {
 		buildList = null;
 	}
@@ -343,6 +333,8 @@ public class BuildManagerWindow : EditorWindow {
 	static void OnBuildAdd(object target) {
 		settings.sequences[sequenceList.index].builds.Add((target as BuildData).Clone() as BuildData);
 	}
+
+	#endregion
 
 	#region Helpers
 	void GuiLine(int i_height = 1) {
