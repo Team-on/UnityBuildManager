@@ -81,7 +81,7 @@ public class ChangelogData {
 	public enum ChangelogEntryType : byte {
 		General = 0,
 		Docs = 1,
-		Featurees = 2,
+		Features = 2,
 		Fixes = 3,
 		Optimizations = 4,
 		Improvements = 5,
