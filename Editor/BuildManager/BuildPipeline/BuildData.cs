@@ -27,7 +27,6 @@ public class BuildData : ICloneable {
 
 	public bool needItchPush;
 	public string itchChannel;
-	public bool itchAddLastChangelogUpdateNameToVerison;
 
 	public bool needGithubPush;
 
@@ -66,7 +65,6 @@ public class BuildData : ICloneable {
 
 		needItchPush = false;
 		itchChannel = "channel";
-		itchAddLastChangelogUpdateNameToVerison = true;
 
 		needGithubPush = false;
 

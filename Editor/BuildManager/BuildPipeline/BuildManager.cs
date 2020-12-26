@@ -21,13 +21,27 @@ public static class BuildManager {
 	static DateTime usedDate;
 
 	static string buildNameString;
-	static string buildNameStringNoVer;
+
 	static string[] buildsPath;
 
 	public static void RunBuildSequnce(BuildManagerSettings settings, BuildSequence sequence, ChangelogData changelog) {
 		// Start init
-		buildNameString = $"{PlayerSettings.bundleVersion} - {changelog.updateName}";
-		buildNameStringNoVer = changelog.updateName;
+		ChangelogData.ChangelogVersionEntry changelogData = changelog.GetLastVersion();
+
+		if(!string.IsNullOrEmpty(changelogData.updateName) && !string.IsNullOrEmpty(changelogData.date)) {
+			buildNameString = $"{PlayerSettings.bundleVersion} - {changelogData.updateName} ({changelogData.date})";
+		}
+		else if (!string.IsNullOrEmpty(changelogData.updateName)) {
+			buildNameString = $"{PlayerSettings.bundleVersion} - {changelogData.updateName}";
+		}
+		else if (!string.IsNullOrEmpty(changelogData.date)) {
+			buildNameString = $"{PlayerSettings.bundleVersion} ({changelogData.date})";
+		}
+		else {
+			buildNameString = $"{PlayerSettings.bundleVersion}";
+		}
+
+
 #if GAME_TEMPLATE
 		TemplateGameManager.InstanceEditor.buildNameString = buildNameString;
 		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
@@ -386,12 +400,7 @@ public static class BuildManager {
 		args.Append("\" ");
 
 		args.Append($"{settings.itchGameLink}:{data.itchChannel} ");
-		if (data.itchAddLastChangelogUpdateNameToVerison && !string.IsNullOrEmpty(buildNameString)) {
-			args.Append($"--userversion \"{buildNameString}\" ");
-		}
-		else {
-			args.Append($"--userversion \"{PlayerSettings.bundleVersion}\" ");
-		}
+		args.Append($"--userversion \"{buildNameString}\" ");
 
 		Debug.Log(fileName.ToString() + args.ToString());
 		Process.Start(fileName.ToString(), args.ToString());
@@ -430,7 +439,7 @@ public static class BuildManager {
 		args.Append($"--user {settings.githubUserName} ");
 		args.Append($"--repo {settings.githubRepoName} ");
 		args.Append($"--tag v{PlayerSettings.bundleVersion} ");
-		args.Append($"--name \"{(!string.IsNullOrEmpty(buildNameStringNoVer) ? buildNameStringNoVer : PlayerSettings.bundleVersion.ToString())}\" ");
+		args.Append($"--name \"{buildNameString}\" ");
 		//TODO:
 		args.Append($"--description \"Changelog, readme, etc\" ");
 

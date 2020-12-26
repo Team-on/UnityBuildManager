@@ -135,7 +135,6 @@ public class BuildManagerWindow : EditorWindow {
 			scrollPosChangelog = EditorGUILayout.BeginScrollView(scrollPosChangelog/*, GUILayout.Height(800f)*/);
 			++EditorGUI.indentLevel;
 
-			changelog.updateName = EditorGUILayout.TextField("Update name", changelog.updateName);
 
 			GUILayout.Space(10f);
 			EditorGUILayout.BeginHorizontal();
@@ -175,6 +174,8 @@ public class BuildManagerWindow : EditorWindow {
 					if (GUILayout.Button($"Now", GUILayout.Width(70)))
 						version.date = System.DateTime.Now.ToShortDateString();
 					EditorGUILayout.EndHorizontal();
+
+					version.updateName = EditorGUILayout.TextField("Update name", version.updateName);
 
 					EditorGUILayout.LabelField("Notes: ");
 
@@ -333,7 +334,6 @@ public class BuildManagerWindow : EditorWindow {
 			++EditorGUI.indentLevel;
 			selected.needItchPush = EditorGUILayout.Toggle("Push to itch.io", selected.needItchPush);
 			selected.itchChannel = EditorGUILayout.TextField("Channel", selected.itchChannel);
-			selected.itchAddLastChangelogUpdateNameToVerison = EditorGUILayout.Toggle("Add Changelog Update Name To Verison", selected.itchAddLastChangelogUpdateNameToVerison);
 			--EditorGUI.indentLevel;
 
 			--EditorGUI.indentLevel;

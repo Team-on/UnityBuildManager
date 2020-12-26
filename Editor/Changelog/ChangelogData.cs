@@ -7,10 +7,14 @@ using UnityEditor;
 
 [Serializable]
 public class ChangelogData {
-	public string updateName;
 
 	public List<ChangelogVersionEntry> versions = new List<ChangelogVersionEntry>() { new ChangelogVersionEntry() };
 
+	public ChangelogVersionEntry GetLastVersion() {
+		if (versions.Count == 0)
+			return new ChangelogVersionEntry();
+		return versions[versions.Count - 1];
+	}
 
 	#region Serialization
 	const string SAVE_FILE_NOREZ = "ChangelogSettings";
@@ -62,6 +66,7 @@ public class ChangelogData {
 
 		public string version;
 		public string date;
+		public string updateName;
 
 		public List<ChangelogNoteEntry> notes = new List<ChangelogNoteEntry>();
 	}
