@@ -186,8 +186,9 @@ public class BuildManagerWindow : EditorWindow {
 
 					++EditorGUI.indentLevel;
 					EditorGUILayout.BeginHorizontal();
-					EditorGUILayout.LabelField("Type", GUILayout.Width(200));
-					EditorGUILayout.LabelField("Scope", GUILayout.Width(200));
+					EditorGUILayout.LabelField("Type", GUILayout.Width(150));
+					EditorGUILayout.LabelField("Scope", GUILayout.Width(125));
+					EditorGUILayout.LabelField("Community", GUILayout.Width(100));
 					EditorGUILayout.LabelField("Description");
 					EditorGUILayout.EndHorizontal();
 
@@ -195,9 +196,10 @@ public class BuildManagerWindow : EditorWindow {
 						ChangelogData.ChangelogNoteEntry note = version.notes[j];
 						EditorGUILayout.BeginHorizontal();
 
-						ChangelogData.ChangelogEntryType newType = (ChangelogData.ChangelogEntryType)EditorGUILayout.EnumPopup("", note.type, GUILayout.Width(200));
-						ChangelogData.ChangelogEntryScope newScope = (ChangelogData.ChangelogEntryScope)EditorGUILayout.EnumPopup("", note.scope, GUILayout.Width(200));
-						note.text = EditorGUILayout.TextField("", note.text);
+						ChangelogData.ChangelogEntryType newType = (ChangelogData.ChangelogEntryType)EditorGUILayout.EnumPopup(note.type, GUILayout.Width(150));
+						ChangelogData.ChangelogEntryScope newScope = (ChangelogData.ChangelogEntryScope)EditorGUILayout.EnumPopup(note.scope, GUILayout.Width(150));
+						note.isCommunityFeedback = EditorGUILayout.Toggle(note.isCommunityFeedback, GUILayout.Width(70));
+						note.text = EditorGUILayout.TextField(note.text);
 
 						if (note.type != newType || note.scope != newScope) {
 							note.type = newType;

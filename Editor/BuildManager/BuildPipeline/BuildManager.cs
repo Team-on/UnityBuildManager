@@ -104,57 +104,7 @@ public static class BuildManager {
 		bool isAnyReleaseBuild = false;
 
 		if (isNeedChangelogFile) {
-			StringBuilder sb = new StringBuilder();
-
-			ChangelogData.ChangelogEntryType lastType;
-			ChangelogData.ChangelogEntryScope lastScope;
-
-
-			for (int i = usedChangelog.versions.Count - 1; i >= 0; --i) {
-				lastType = (ChangelogData.ChangelogEntryType)255;
-				lastScope = (ChangelogData.ChangelogEntryScope)255;
-				ChangelogData.ChangelogVersionEntry version = usedChangelog.versions[i];
-
-				if(i != usedChangelog.versions.Count - 1) {
-					sb.Append("---------- \n");
-
-				}
-				sb.Append("# "); 
-				sb.Append(version.GetVersionHeader()); 
-				sb.Append("\n");
-
-				sb.Append(version.descriptionText);
-				sb.Append("\n\n");
-
-				for (int j = 0; j < version.notes.Count; ++j) {
-					ChangelogData.ChangelogNoteEntry note = version.notes[j];
-
-					if(lastType != note.type) {
-						if(lastType != (ChangelogData.ChangelogEntryType)255)
-							sb.Append("\n");
-						lastType = note.type;
-						lastScope = (ChangelogData.ChangelogEntryScope)255;
-						sb.Append("## ");
-						sb.Append(note.type);
-						sb.Append(": \n");
-					}
-
-					if (lastScope != note.scope) {
-						lastScope = note.scope;
-						sb.Append("### ");
-						sb.Append(note.scope);
-						sb.Append(": \n");
-					}
-
-					sb.Append(" * ");
-					sb.Append(note.text);
-					sb.Append("\n");
-				}
-
-				sb.Append("\n");
-			}
-
-			changelogContent = sb.ToString();
+			changelogContent = usedChangelog.GetChangelogString();
 		}
 
 		for (byte i = 0; i < sequence.builds.Count; ++i) {

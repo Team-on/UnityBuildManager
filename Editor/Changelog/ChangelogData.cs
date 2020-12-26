@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +16,64 @@ public class ChangelogData {
 		if (versions.Count == 0)
 			return new ChangelogVersionEntry();
 		return versions[versions.Count - 1];
+	}
+
+	public string GetChangelogString() {
+		StringBuilder sb = new StringBuilder();
+
+		ChangelogEntryType lastType;
+		ChangelogEntryScope lastScope;
+
+		sb.Append("Note: 📢 indicates a change inspired by community feedback!\n");
+		sb.Append("---------- \n");
+
+		for (int i = versions.Count - 1; i >= 0; --i) {
+			lastType = (ChangelogEntryType)255;
+			lastScope = (ChangelogEntryScope)255;
+			ChangelogVersionEntry version = versions[i];
+
+			if (i != versions.Count - 1) {
+				sb.Append("---------- \n");
+
+			}
+			sb.Append("# ");
+			sb.Append(version.GetVersionHeader());
+			sb.Append("\n");
+
+			sb.Append(version.descriptionText);
+			sb.Append("\n\n");
+
+			for (int j = 0; j < version.notes.Count; ++j) {
+				ChangelogNoteEntry note = version.notes[j];
+
+				if (lastType != note.type) {
+					if (lastType != (ChangelogEntryType)255)
+						sb.Append("\n");
+					lastType = note.type;
+					lastScope = (ChangelogEntryScope)255;
+					sb.Append("## ");
+					sb.Append(note.type);
+					sb.Append(": \n");
+				}
+
+				if (lastScope != note.scope) {
+					lastScope = note.scope;
+					sb.Append("### ");
+					sb.Append(note.scope);
+					sb.Append(": \n");
+				}
+
+				sb.Append(" * ");
+				if(note.isCommunityFeedback)
+					sb.Append("📢 ");
+				sb.Append(note.text);
+				sb.Append("\n");
+			}
+
+			sb.Append("\n");
+		}
+
+		return sb.ToString();
 	}
 
 	#region Serialization
@@ -95,6 +154,7 @@ public class ChangelogData {
 
 	[Serializable]
 	public class ChangelogNoteEntry {
+		public bool isCommunityFeedback = false;
 		public ChangelogEntryType type;
 		public ChangelogEntryScope scope;
 		public string text;
