@@ -21,60 +21,22 @@ public class ChangelogData {
 	public string GetChangelogString() {
 		StringBuilder sb = new StringBuilder();
 
-		ChangelogEntryType lastType;
-		ChangelogEntryScope lastScope;
-
 		sb.Append("Note: 📢 indicates a change inspired by community feedback!\n");
-		sb.Append("---------- \n");
 
 		for (int i = versions.Count - 1; i >= 0; --i) {
-			lastType = (ChangelogEntryType)255;
-			lastScope = (ChangelogEntryScope)255;
-			ChangelogVersionEntry version = versions[i];
-
-			if (i != versions.Count - 1) {
-				sb.Append("---------- \n");
-
-			}
-			sb.Append("# ");
-			sb.Append(version.GetVersionHeader());
-			sb.Append("\n");
-
-			sb.Append(version.descriptionText);
-			sb.Append("\n\n");
-
-			for (int j = 0; j < version.notes.Count; ++j) {
-				ChangelogNoteEntry note = version.notes[j];
-
-				if (lastType != note.type) {
-					if (lastType != (ChangelogEntryType)255)
-						sb.Append("\n");
-					lastType = note.type;
-					lastScope = (ChangelogEntryScope)255;
-					sb.Append("## ");
-					sb.Append(note.type);
-					sb.Append(": \n");
-				}
-
-				if (lastScope != note.scope) {
-					lastScope = note.scope;
-					sb.Append("### ");
-					sb.Append(note.scope);
-					sb.Append(": \n");
-				}
-
-				sb.Append(" * ");
-				if(note.isCommunityFeedback)
-					sb.Append("📢 ");
-				sb.Append(note.text);
-				sb.Append("\n");
-			}
-
-			sb.Append("\n");
+			versions[i].GetChangelog(ref sb);
 		}
 
 		return sb.ToString();
 	}
+
+	public string GetLastChangelogString() {
+		StringBuilder sb = new StringBuilder();
+		sb.Append("Note: 📢 indicates a change inspired by community feedback!\n");
+		versions[versions.Count - 1].GetChangelog(ref sb);
+		return sb.ToString();
+	}
+
 
 	#region Serialization
 	const string SAVE_FILE_NOREZ = "ChangelogSettings";
@@ -150,6 +112,40 @@ public class ChangelogData {
 
 			return header;
 		}
+
+		public void GetChangelog(ref StringBuilder sb) {
+			ChangelogEntryType lastType = (ChangelogEntryType)255;
+			ChangelogEntryScope lastScope = (ChangelogEntryScope)255;
+
+			sb.Append("\n\n---------- \n");
+			sb.Append("# ");
+			sb.Append(GetVersionHeader());
+			sb.Append("\n");
+
+			sb.Append(descriptionText);
+			sb.Append("\n");
+
+			for (int j = 0; j < notes.Count; ++j) {
+				if (lastType != notes[j].type) {
+					if (lastType != (ChangelogEntryType)255)
+						sb.Append("\n");
+					lastType = notes[j].type;
+					lastScope = (ChangelogEntryScope)255;
+					sb.Append("### ");
+					sb.Append(notes[j].type);
+					sb.Append(": \n");
+				}
+
+				if (lastScope != notes[j].scope) {
+					lastScope = notes[j].scope;
+					sb.Append("#### ");
+					sb.Append(notes[j].scope);
+					sb.Append(": \n");
+				}
+
+				notes[j].GetChangelog(ref sb);
+			}
+		}
 	}
 
 	[Serializable]
@@ -158,6 +154,14 @@ public class ChangelogData {
 		public ChangelogEntryType type;
 		public ChangelogEntryScope scope;
 		public string text;
+
+		public void GetChangelog(ref StringBuilder sb) {
+			sb.Append(" * ");
+			if (isCommunityFeedback)
+				sb.Append("📢 ");
+			sb.Append(text);
+			sb.Append("\n");
+		}
 	}
 
 	public enum ChangelogEntryType : byte {

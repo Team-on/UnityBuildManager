@@ -492,7 +492,7 @@ public static class BuildManager {
 		args.Append($"--tag v{PlayerSettings.bundleVersion} ");
 		args.Append($"--name \"{buildNameString}\" ");
 		//TODO:
-		args.Append($"--description \"Changelog, readme, etc\" ");
+		args.Append($"--description \"{usedChangelog.GetLastChangelogString()}\" ");
 
 
 		Debug.Log(fileName.ToString() + args.ToString());
