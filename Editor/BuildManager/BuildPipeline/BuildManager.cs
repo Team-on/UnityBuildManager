@@ -24,22 +24,13 @@ public static class BuildManager {
 
 	static string[] buildsPath;
 
+	static ChangelogData usedChangelog;
+
 	public static void RunBuildSequnce(BuildManagerSettings settings, BuildSequence sequence, ChangelogData changelog) {
 		// Start init
-		ChangelogData.ChangelogVersionEntry changelogData = changelog.GetLastVersion();
-
-		if(!string.IsNullOrEmpty(changelogData.updateName) && !string.IsNullOrEmpty(changelogData.date)) {
-			buildNameString = $"{PlayerSettings.bundleVersion} - {changelogData.updateName} ({changelogData.date})";
-		}
-		else if (!string.IsNullOrEmpty(changelogData.updateName)) {
-			buildNameString = $"{PlayerSettings.bundleVersion} - {changelogData.updateName}";
-		}
-		else if (!string.IsNullOrEmpty(changelogData.date)) {
-			buildNameString = $"{PlayerSettings.bundleVersion} ({changelogData.date})";
-		}
-		else {
-			buildNameString = $"{PlayerSettings.bundleVersion}";
-		}
+		usedChangelog = changelog;
+		ChangelogData.ChangelogVersionEntry usedChangelogEntry = changelog.GetLastVersion();
+		buildNameString = usedChangelogEntry.GetVersionHeader();
 
 
 #if GAME_TEMPLATE

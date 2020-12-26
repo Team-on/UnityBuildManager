@@ -69,6 +69,25 @@ public class ChangelogData {
 		public string updateName;
 
 		public List<ChangelogNoteEntry> notes = new List<ChangelogNoteEntry>();
+
+		public string GetVersionHeader() {
+			string header;
+
+			if (!string.IsNullOrEmpty(updateName) && !string.IsNullOrEmpty(date)) {
+				header = $"{version} - {updateName} ({date})";
+			}
+			else if (!string.IsNullOrEmpty(updateName)) {
+				header = $"{version} - {updateName}";
+			}
+			else if (!string.IsNullOrEmpty(date)) {
+				header = $"{version} ({date})";
+			}
+			else {
+				header = $"{version}";
+			}
+
+			return header;
+		}
 	}
 
 	[Serializable]

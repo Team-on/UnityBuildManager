@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Linq;
+using UnityEngine;
 using UnityEditor;
 using UnityEditorInternal;
 
@@ -190,9 +192,16 @@ public class BuildManagerWindow : EditorWindow {
 						ChangelogData.ChangelogNoteEntry note = version.notes[j];
 						EditorGUILayout.BeginHorizontal();
 
-						note.type = (ChangelogData.ChangelogEntryType)EditorGUILayout.EnumPopup("", note.type, GUILayout.Width(200));
-						note.scope = (ChangelogData.ChangelogEntryScope)EditorGUILayout.EnumPopup("", note.scope, GUILayout.Width(200));
+						ChangelogData.ChangelogEntryType newType = (ChangelogData.ChangelogEntryType)EditorGUILayout.EnumPopup("", note.type, GUILayout.Width(200));
+						ChangelogData.ChangelogEntryScope newScope = (ChangelogData.ChangelogEntryScope)EditorGUILayout.EnumPopup("", note.scope, GUILayout.Width(200));
 						note.text = EditorGUILayout.TextField("", note.text);
+
+						if (note.type != newType || note.scope != newScope) {
+							note.type = newType;
+							note.scope = newScope;
+							version.notes = version.notes.OrderBy(_note => _note.type).ThenBy(_note => _note.scope).ToList();
+							return;
+						}
 
 						if (GUILayout.Button($"-", GUILayout.Width(25))) {
 							version.notes.RemoveAt(j);
