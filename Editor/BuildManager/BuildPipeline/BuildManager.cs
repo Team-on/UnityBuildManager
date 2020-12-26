@@ -101,6 +101,8 @@ public static class BuildManager {
 		string changelogContent = "";
 		string readmeContent = usedChangelog.readme;
 
+		bool isAnyReleaseBuild = false;
+
 		if (isNeedChangelogFile) {
 			StringBuilder sb = new StringBuilder();
 
@@ -161,6 +163,8 @@ public static class BuildManager {
 
 			if (!string.IsNullOrEmpty(buildsPath[i])) {
 				if (sequence.builds[i].isReleaseBuild) {  //Destroy IL2CPP junk after build
+					isAnyReleaseBuild = true;
+
 					string buildRootPath = Path.GetDirectoryName(buildsPath[i]);
 					string[] dirs = Directory.GetDirectories(buildRootPath);
 					var il2cppDirs = dirs.Where(s => s.Contains("BackUpThisFolder_ButDontShipItWithYourGame"));
@@ -202,6 +206,34 @@ public static class BuildManager {
 							readmeContent
 						);
 					}
+				}
+			}
+		}
+
+		if (isAnyReleaseBuild) {
+			string gitRootPath = Path.Combine(Application.dataPath, "..");
+
+			if(!Directory.Exists(Path.Combine(gitRootPath, ".git"))) {
+				gitRootPath = Path.Combine(gitRootPath, "..");
+
+				if (!Directory.Exists(Path.Combine(gitRootPath, ".git"))) {
+					gitRootPath = null;
+				}
+			}
+
+			if(gitRootPath != null) {
+				if (isNeedChangelogFile) {
+					File.WriteAllText(
+						Path.Combine(gitRootPath, "Changelog.md"),
+						changelogContent
+					);
+				}
+
+				if (isNeedReadmeFile) {
+					File.WriteAllText(
+						Path.Combine(gitRootPath, "ReadmeGame.md"),
+						readmeContent
+					);
 				}
 			}
 		}
