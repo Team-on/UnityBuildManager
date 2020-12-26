@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEditor;
@@ -6,6 +8,9 @@ using UnityEditor;
 [Serializable]
 public class ChangelogData {
 	public string updateName;
+
+	public List<ChangelogVersionEntry> versions = new List<ChangelogVersionEntry>() { new ChangelogVersionEntry() };
+
 
 	#region Serialization
 	const string SAVE_FILE_NOREZ = "ChangelogSettings";
@@ -50,4 +55,48 @@ public class ChangelogData {
 		}
 	}
 	#endregion
+
+	[Serializable]
+	public class ChangelogVersionEntry {
+		[NonSerialized] public bool foldout = false;
+
+		public string version;
+		public string date;
+
+		public List<ChangelogNoteEntry> notes = new List<ChangelogNoteEntry>();
+	}
+
+	[Serializable]
+	public class ChangelogNoteEntry {
+		public ChangelogEntryType type;
+		public ChangelogEntryScope scope;
+		public string text;
+	}
+
+	public enum ChangelogEntryType : byte {
+		General = 0,
+		Docs = 1,
+		Featurees = 2,
+		Fixes = 3,
+		Optimizations = 4,
+		Improvements = 5,
+		Changes = 6,
+		Refactoring = 7,
+		Testing = 8,
+		KnownIssues = 9,
+	}
+
+	public enum ChangelogEntryScope : byte {
+		General = 0,
+		Gameplay = 1,
+		LevelDesign = 2,
+		Art = 3,
+		VFX = 4,
+		UI = 5,
+		Music = 6,
+		SFX = 7,
+		Voice = 8,
+		Narrative = 9,
+		Miscellaneous = 10,
+	}
 }

@@ -39,15 +39,21 @@ public class BuildManagerWindow : EditorWindow {
 		DrawGlobalBuildData();
 		DrawChangelogInfo();
 
-		DrawBuildButtons();
+		if (!changelogFoldout) {
+			DrawBuildButtons();
 
-		EditorGUILayout.Space(20);
-		scrollPosSequence = EditorGUILayout.BeginScrollView(scrollPosSequence);
+			EditorGUILayout.Space(20);
+			scrollPosSequence = EditorGUILayout.BeginScrollView(scrollPosSequence);
 
-		DrawSequenceList();
-		DrawSelectedSequenceData();
+			DrawSequenceList();
+			DrawSelectedSequenceData();
 
-		EditorGUILayout.EndScrollView();
+			EditorGUILayout.EndScrollView();
+		}
+		else {
+			EditorGUILayout.HelpBox("Close changelog to acess build data", MessageType.Warning);
+		}
+
 		EditorUtility.SetDirty(settings);
 	}
 
@@ -117,38 +123,103 @@ public class BuildManagerWindow : EditorWindow {
 		}
 		EditorGUILayout.EndFoldoutHeaderGroup();
 
-		if(globalDataFoldout)
+		if (globalDataFoldout)
 			EditorGUILayout.Space(20);
 	}
 
 	void DrawChangelogInfo() {
-		bool isChanged = false;
-		string tmpString = "";
-
 		changelogFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(changelogFoldout, "Changelog");
+		EditorGUILayout.EndFoldoutHeaderGroup();
+	
 		if (changelogFoldout) {
-			scrollPosChangelog = EditorGUILayout.BeginScrollView(scrollPosChangelog);
+			scrollPosChangelog = EditorGUILayout.BeginScrollView(scrollPosChangelog/*, GUILayout.Height(800f)*/);
 			++EditorGUI.indentLevel;
 
-			changelog.updateName = DrawStringField("Update name", changelog.updateName);
+			changelog.updateName = EditorGUILayout.TextField("Update name", changelog.updateName);
+
+			GUILayout.Space(10f);
+			EditorGUILayout.BeginHorizontal();
+			EditorGUILayout.LabelField("Changelog file:", GUILayout.Width(100));
+			if (GUILayout.Button($"Add version"))
+				changelog.versions.Add(new ChangelogData.ChangelogVersionEntry());
+			EditorGUILayout.EndHorizontal();
+
+			for (int i = changelog.versions.Count - 1; i >= 0; --i) {
+				ChangelogData.ChangelogVersionEntry version = changelog.versions[i];
+
+				EditorGUILayout.BeginHorizontal();
+				version.foldout = EditorGUILayout.BeginFoldoutHeaderGroup(version.foldout, $"{version.version} - {version.date}");
+				EditorGUILayout.EndFoldoutHeaderGroup();
+				if (GUILayout.Button($"Remove version", GUILayout.Width(100))) {
+					changelog.versions.RemoveAt(i);
+					return;
+				}
+				EditorGUILayout.EndHorizontal();
+
+				if (string.IsNullOrEmpty(version.version))
+					version.version = PlayerSettings.bundleVersion;
+				if (string.IsNullOrEmpty(version.date))
+					version.date = System.DateTime.Now.ToShortDateString();
+
+				if (version.foldout) {
+					++EditorGUI.indentLevel;
+
+					EditorGUILayout.BeginHorizontal();
+					version.version = EditorGUILayout.TextField("Version", version.version);
+					if (GUILayout.Button($"Curr", GUILayout.Width(70)))
+						version.version = PlayerSettings.bundleVersion;
+					EditorGUILayout.EndHorizontal();
+
+					EditorGUILayout.BeginHorizontal();
+					version.date = EditorGUILayout.TextField("Date", version.date);
+					if (GUILayout.Button($"Now", GUILayout.Width(70)))
+						version.date = System.DateTime.Now.ToShortDateString();
+					EditorGUILayout.EndHorizontal();
+
+					EditorGUILayout.LabelField("Notes: ");
+
+					++EditorGUI.indentLevel;
+					EditorGUILayout.BeginHorizontal();
+					EditorGUILayout.LabelField("Type", GUILayout.Width(200));
+					EditorGUILayout.LabelField("Scope", GUILayout.Width(200));
+					EditorGUILayout.LabelField("Description");
+					EditorGUILayout.EndHorizontal();
+
+					for (int j = 0; j < version.notes.Count; ++j) {
+						ChangelogData.ChangelogNoteEntry note = version.notes[j];
+						EditorGUILayout.BeginHorizontal();
+
+						note.type = (ChangelogData.ChangelogEntryType)EditorGUILayout.EnumPopup("", note.type, GUILayout.Width(200));
+						note.scope = (ChangelogData.ChangelogEntryScope)EditorGUILayout.EnumPopup("", note.scope, GUILayout.Width(200));
+						note.text = EditorGUILayout.TextField("", note.text);
+
+						if (GUILayout.Button($"-", GUILayout.Width(25))) {
+							version.notes.RemoveAt(j);
+							return;
+						}
+
+						EditorGUILayout.EndHorizontal();
+					}
+					--EditorGUI.indentLevel;
+				
+					if (GUILayout.Button($"Add note"))
+						version.notes.Add(new ChangelogData.ChangelogNoteEntry());
+
+					--EditorGUI.indentLevel;
+				}
+
+				EditorGUILayout.Space(10);
+			}
 
 			--EditorGUI.indentLevel;
 			EditorGUILayout.EndScrollView();
 		}
-		EditorGUILayout.EndFoldoutHeaderGroup();
 
-		if (isChanged)
+		if (GUI.changed)
 			ChangelogData.SaveChangelog(changelog);
 
-		if(changelogFoldout)
+		if (changelogFoldout)
 			EditorGUILayout.Space(20);
-
-		string DrawStringField(string label, string text) {
-			tmpString = EditorGUILayout.TextField(label, text);
-			if (text != tmpString)
-				isChanged = true;
-			return tmpString;
-		}
 	}
 
 	void DrawBuildButtons() {
