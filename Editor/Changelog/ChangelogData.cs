@@ -9,6 +9,7 @@ using UnityEditor;
 public class ChangelogData {
 
 	public List<ChangelogVersionEntry> versions = new List<ChangelogVersionEntry>() { new ChangelogVersionEntry() };
+	[TextArea(3, 10)] public string readme;
 
 	public ChangelogVersionEntry GetLastVersion() {
 		if (versions.Count == 0)
@@ -67,6 +68,8 @@ public class ChangelogData {
 		public string version;
 		public string date;
 		public string updateName;
+
+		public string descriptionText;
 
 		public List<ChangelogNoteEntry> notes = new List<ChangelogNoteEntry>();
 

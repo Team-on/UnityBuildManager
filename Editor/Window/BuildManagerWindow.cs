@@ -137,8 +137,10 @@ public class BuildManagerWindow : EditorWindow {
 			scrollPosChangelog = EditorGUILayout.BeginScrollView(scrollPosChangelog/*, GUILayout.Height(800f)*/);
 			++EditorGUI.indentLevel;
 
-
+			EditorGUILayout.LabelField("Readme");
+			changelog.readme = EditorGUILayout.TextArea(changelog.readme);
 			GUILayout.Space(10f);
+
 			EditorGUILayout.BeginHorizontal();
 			EditorGUILayout.LabelField("Changelog file:", GUILayout.Width(100));
 			if (GUILayout.Button($"Add version"))
@@ -178,6 +180,7 @@ public class BuildManagerWindow : EditorWindow {
 					EditorGUILayout.EndHorizontal();
 
 					version.updateName = EditorGUILayout.TextField("Update name", version.updateName);
+					version.descriptionText = EditorGUILayout.TextField("Description", version.descriptionText);
 
 					EditorGUILayout.LabelField("Notes: ");
 
