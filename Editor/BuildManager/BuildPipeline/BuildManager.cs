@@ -32,10 +32,9 @@ public static class BuildManager {
 		ChangelogData.ChangelogVersionEntry usedChangelogEntry = changelog.GetLastVersion();
 		buildNameString = usedChangelogEntry.GetVersionHeader();
 
-
 #if GAME_TEMPLATE
-		TemplateGameManager.InstanceEditor.buildNameString = buildNameString;
-		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
+		TemplateGameManager.Instance.buildNameString = buildNameString;
+		TemplateGameManager.Instance.productName = PlayerSettings.productName;
 #endif
 		usedDate = DateTime.Now;
 		//End init
@@ -483,17 +482,13 @@ public static class BuildManager {
 		}
 
 		fileName.Append(githubReleaseExe);
-		//TODO: wait untill release created
-		//it not pushed, if you not wait
 		args.Append(" release ");
 		args.Append($"--security-token \"{settings.GithubToken}\" ");
 		args.Append($"--user {settings.githubUserName} ");
 		args.Append($"--repo {settings.githubRepoName} ");
 		args.Append($"--tag v{PlayerSettings.bundleVersion} ");
 		args.Append($"--name \"{buildNameString}\" ");
-		//TODO:
 		args.Append($"--description \"{usedChangelog.GetLastChangelogString()}\" ");
-
 
 		Debug.Log(fileName.ToString() + args.ToString());
 		Process.Start(fileName.ToString(), args.ToString());

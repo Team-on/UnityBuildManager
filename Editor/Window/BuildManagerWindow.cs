@@ -228,6 +228,11 @@ public class BuildManagerWindow : EditorWindow {
 
 			--EditorGUI.indentLevel;
 			EditorGUILayout.EndScrollView();
+
+#if GAME_TEMPLATE
+		TemplateGameManager.Instance.buildNameString = changelog.GetLastVersion().GetVersionHeader();;
+		TemplateGameManager.Instance.productName = PlayerSettings.productName;
+#endif
 		}
 
 		if (GUI.changed)
