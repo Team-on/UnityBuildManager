@@ -230,8 +230,8 @@ public class BuildManagerWindow : EditorWindow {
 			EditorGUILayout.EndScrollView();
 
 #if GAME_TEMPLATE
-		TemplateGameManager.Instance.buildNameString = changelog.GetLastVersion().GetVersionHeader();;
-		TemplateGameManager.Instance.productName = PlayerSettings.productName;
+		TemplateGameManager.InstanceEditor.buildNameString = changelog.GetLastVersion().GetVersionHeader();;
+		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
 #endif
 		}
 
