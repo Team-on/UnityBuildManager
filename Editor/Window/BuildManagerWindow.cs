@@ -232,6 +232,7 @@ public class BuildManagerWindow : EditorWindow {
 #if GAME_TEMPLATE
 		TemplateGameManager.InstanceEditor.buildNameString = changelog.GetLastVersion().GetVersionHeader();;
 		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
+		EditorUtility.SetDirty(TemplateGameManager.InstanceEditor);
 #endif
 		}
 

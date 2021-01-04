@@ -35,6 +35,7 @@ public static class BuildManager {
 #if GAME_TEMPLATE
 		TemplateGameManager.InstanceEditor.buildNameString = buildNameString;
 		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
+		EditorUtility.SetDirty(TemplateGameManager.InstanceEditor);
 #endif
 		usedDate = DateTime.Now;
 		//End init
