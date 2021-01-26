@@ -66,6 +66,8 @@ public class BuildManagerWindow : EditorWindow {
 			++EditorGUI.indentLevel;
 
 			//Versions
+			PlayerSettings.companyName = EditorGUILayout.TextField("Company Name", PlayerSettings.companyName);
+			PlayerSettings.productName = EditorGUILayout.TextField("Product Name", PlayerSettings.productName);
 			PlayerSettings.bundleVersion = EditorGUILayout.TextField("Version", PlayerSettings.bundleVersion);
 			PlayerSettings.Android.bundleVersionCode = EditorGUILayout.IntField("Android bundle version", PlayerSettings.Android.bundleVersionCode);
 
