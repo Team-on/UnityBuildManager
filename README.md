@@ -6,7 +6,7 @@ Utility for running builds sequence &amp; pushing them to itch.io
  * Run multiple builds
  * Archivate build
  * Push build to itch.io
- * Push build to Gitgub releases
+ * Push build to Github releases
  * Auto optimize release builds for better performace and testing builds for faster build time
  * Maintain defines and options for each build and sequence
  * Keep changelog and readme files
