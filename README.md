@@ -1,8 +1,9 @@
-# UnityBuildManager
-Utility for running builds sequence &amp; pushing them to itch.io
+# Build & Changelog manager
 
 ## Description
-'UnityBuildManager' is an asset that can:
+Utility for running builds sequence &amp; pushing them to itch.io and github
+
+'Build & Changelog manager' is an asset that can:
  * Run multiple builds
  * Archivate build
  * Push build to itch.io
@@ -11,9 +12,51 @@ Utility for running builds sequence &amp; pushing them to itch.io
  * Maintain defines and options for each build and sequence
  * Keep changelog and readme files
  * Auto add changelog and readme to game folders
+ 
+ 
+## Editor window & how to use it
+![Main screen](HelpScreenshots/1.png)  
 
-![1](https://user-images.githubusercontent.com/30273693/107130827-f99dea80-68d9-11eb-877c-d0240f9ff8ad.png)
-![2](https://user-images.githubusercontent.com/30273693/107130826-f86cbd80-68d9-11eb-8e64-586213253870.png)
+
+---------------------
+
+### Global data
+![Global data](HelpScreenshots/2.png)  
+
+---------------------
+
+### Build buttons
+![Build buttons](HelpScreenshots/5.png) 
+
+---------------------
+
+### Sequence general
+![Sequence general](HelpScreenshots/6.png) 
+
+---------------------
+
+### Sequence settings
+![Sequence settings](HelpScreenshots/7.png) 
+
+---------------------
+
+### Build settings
+![Build settings](HelpScreenshots/8.png) 
+
+---------------------
+
+### Updating CLI
+![Updating CLI](HelpScreenshots/9.png) 
+
+---------------------
+
+### Changelog general
+![Changelog general](HelpScreenshots/3.png) 
+
+---------------------
+
+### Changelog version
+![Changelog version](HelpScreenshots/4.png) 
 
 
 ## Installation
@@ -29,19 +72,13 @@ Find the manifest.json file in the Packages folder of your project and add a lin
 `"com.teamon.buildmanager": "https://github.com/Team-on/UnityBuildManager.git"`
 Or, use [UpmGitExtension](https://github.com/mob-sakai/UpmGitExtension) to install and update the package.
 
-#### For Unity 2018.2 or earlier
+### For Unity 2018.2 or earlier
 1. Download a source code zip this page
 2. Extract it
 3. Import it into the following directory in your Unity project
    - `Packages` (It works as an embedded package. For Unity 2018.1 or later)
    - `Assets` (Legacy way. For Unity 2017.1 or later)
    
-#### From Unity Asset Store
+### From Unity Asset Store
 1. https://assetstore.unity.com/packages/slug/188940
 2. Add it to project as usual
-
-
-## Usage
-1. From the menu, click `Window > Build manager(Alt + B)`.
-2. Configurate sequences
-3. Enjoy!
