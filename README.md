@@ -8,10 +8,10 @@ Utility for running builds sequence &amp; pushing them to itch.io and github
  * Archivate build
  * Push build to itch.io
  * Push build to Github releases
- * Auto optimize release builds for better performace and testing builds for faster build time
+ * Auto optimizes release builds for better performace and testing builds for faster build time
  * Maintain defines and options for each build and sequence
  * Keep changelog and readme files
- * Auto add changelog and readme to game folders
+ * Auto adds changelog and readme to game folders
  
 Also it nicely integrated with [Team-on Unity game template](https://github.com/Team-on/UnityGameTemplate)
  
@@ -41,7 +41,7 @@ Here are buttons that run build sequences. There are one button for each sequenc
 
 ### Sequence general
 ![Sequence general](HelpScreenshots/6.png) 
-This is sequence settings. Here you can enable/disable sequnce via chechbox, change it name and add/remove sequences.
+This is sequence settings. Here you can enable/disable sequence  via chech box, change it name and add/remove sequences.
 
 ---------------------
 
@@ -53,11 +53,11 @@ This is global sequence data. Currently you can only add more *Scripting defines
 
 ### Build settings
 ![Build settings](HelpScreenshots/8.png) 
-This is build settings group. Here you can enable/disable build via chechbox, change it name, select target and set build settings.  
+This is build settings group. Here you can enable/disable build via chech box, change it name, select target and set build settings.  
 For each build you can set this data:
- - *Passby build checkmark* - Use previously builded folder and just pass that to post build processing
- - *Release build checkmark* - Apply release optimizations for build. When unchecked - optimized for faster building
- - *VR build checkmark* - enable VR for build
+ - *Passby build check mark* - Use previously builded folder and just pass that to post build processing
+ - *Release build check mark* - Apply release optimizations for build. When unchecked - optimized for faster building
+ - *VR build check mark* - enable VR for build
  - *Output root* - Output root path
  - *Middle path* - Output specific path. Support variables
  - *Dir path* - path to directory that will be *archived* and pushed to *itch.io*. Support variables
@@ -86,7 +86,7 @@ Post build processing:
 
 ### Changelog general
 ![Changelog general](HelpScreenshots/3.png) 
-This is changelog foldout. You need to close it, to access builds window back. Here you can do 2 things.
+This is changelog foldout. You need to close it, to get access to builds window back. Here you can do 2 things.
  - 1) Write Readme.txt file. This file will be included to build folder for standalone platforms.
  - 2) Keep and update changelog. It will automatically parse and created nice looking file that ill be included to build folder for standalone platforms.
 
