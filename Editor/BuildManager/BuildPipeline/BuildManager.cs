@@ -294,7 +294,18 @@ public static class BuildManager {
 	}
 
 	public static string GetProductName() {
-		return PlayerSettings.productName.Replace(' ', '_');
+		return PlayerSettings.productName
+			.Replace(' ', '_')
+			.Replace('/', '_')
+			.Replace('\\', '_')
+			.Replace(':', '_')
+			.Replace('*', '_')
+			.Replace('?', '_')
+			.Replace('"', '_')
+			.Replace('<', '_')
+			.Replace('>', '_')
+			.Replace('|', '_')
+			;
 	}
 
 	public static string GetBuildTargetExecutable(BuildTarget target) {
