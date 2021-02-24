@@ -232,9 +232,9 @@ public class BuildManagerWindow : EditorWindow {
 			EditorGUILayout.EndScrollView();
 
 #if GAME_TEMPLATE
-		TemplateGameManager.InstanceEditor.buildNameString = changelog.GetLastVersion().GetVersionHeader();;
-		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
-		EditorUtility.SetDirty(TemplateGameManager.InstanceEditor);
+		TemplateGameManager.Instance.buildNameString = changelog.GetLastVersion().GetVersionHeader();;
+		TemplateGameManager.Instance.productName = PlayerSettings.productName;
+		EditorUtility.SetDirty(TemplateGameManager.Instance);
 #endif
 		}
 

@@ -33,9 +33,9 @@ public static class BuildManager {
 		buildNameString = usedChangelogEntry.GetVersionHeader();
 
 #if GAME_TEMPLATE
-		TemplateGameManager.InstanceEditor.buildNameString = buildNameString;
-		TemplateGameManager.InstanceEditor.productName = PlayerSettings.productName;
-		EditorUtility.SetDirty(TemplateGameManager.InstanceEditor);
+		TemplateGameManager.Instance.buildNameString = buildNameString;
+		TemplateGameManager.Instance.productName = PlayerSettings.productName;
+		EditorUtility.SetDirty(TemplateGameManager.Instance);
 #endif
 		usedDate = DateTime.Now;
 		//End init
