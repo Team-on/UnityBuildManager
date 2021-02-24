@@ -31,7 +31,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: windows-32
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -50,7 +49,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: windows-64
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -69,7 +67,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: linux-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -88,7 +85,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: osx-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -107,7 +103,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: webgl
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -126,7 +121,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: android
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -149,7 +143,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: windows-32
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -168,7 +161,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: windows-64
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -187,7 +179,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: linux-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -206,7 +197,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: osx-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -225,7 +215,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: webgl
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -244,7 +233,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: android
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -267,7 +255,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: windows-32
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -286,7 +273,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: windows-64
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -305,7 +291,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: linux-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -324,7 +309,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: osx-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -343,7 +327,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: webgl
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -362,7 +345,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: android
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -385,7 +367,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: windows-32
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -404,7 +385,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: windows-64
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -423,7 +403,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: linux-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -442,7 +421,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: osx-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -461,7 +439,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: webgl
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -480,7 +457,6 @@ MonoBehaviour:
       needZip: 0
       needItchPush: 0
       itchChannel: android
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -503,7 +479,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: windows-32
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -522,7 +497,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: windows-64
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -541,7 +515,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: linux-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -560,7 +533,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: osx-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -579,7 +551,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: webgl
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -598,7 +569,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: android
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 0
       needGamejolthPush: 0
       needSteamPush: 0
@@ -621,7 +591,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: windows-32
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 1
       needGamejolthPush: 0
       needSteamPush: 0
@@ -640,7 +609,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: windows-64
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 1
       needGamejolthPush: 0
       needSteamPush: 0
@@ -659,7 +627,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: linux-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 1
       needGamejolthPush: 0
       needSteamPush: 0
@@ -678,7 +645,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: osx-universal
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 1
       needGamejolthPush: 0
       needSteamPush: 0
@@ -697,7 +663,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: webgl
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 1
       needGamejolthPush: 0
       needSteamPush: 0
@@ -716,7 +681,6 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 1
       itchChannel: android
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 1
       needGamejolthPush: 0
       needSteamPush: 0
@@ -739,13 +703,11 @@ MonoBehaviour:
       needZip: 1
       needItchPush: 0
       itchChannel: windows-testing
-      itchAddLastChangelogUpdateNameToVerison: 1
       needGithubPush: 1
       needGamejolthPush: 0
       needSteamPush: 0
       needGoogleDrivePush: 0
   scriptingDefineSymbols: 
-  itchGameLink: 
-  githubToken: 
-  githubUserName: 
-  githubRepoName: 
+  itchGameLink: teamon/BuildManagerUPM
+  githubUserName: Team-on
+  githubRepoName: BuildManagerUPM
