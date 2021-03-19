@@ -373,15 +373,13 @@ public static class BuildManager {
 		else {
 			switch (buildTargetGroup) {
 				case BuildTargetGroup.Standalone:
-					buildOptions ^= BuildOptions.CompressWithLz4;
-					buildOptions ^= BuildOptions.CompressWithLz4HC;
+					buildOptions &= ~(BuildOptions.CompressWithLz4 | BuildOptions.CompressWithLz4HC);
 
 					PlayerSettings.SetScriptingBackend(buildTargetGroup, ScriptingImplementation.Mono2x);
 					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Debug);
 					break;
 				case BuildTargetGroup.Android:
-					buildOptions ^= BuildOptions.CompressWithLz4;
-					buildOptions ^= BuildOptions.CompressWithLz4HC;
+					buildOptions &= ~(BuildOptions.CompressWithLz4 | BuildOptions.CompressWithLz4HC);
 
 					PlayerSettings.SetScriptingBackend(buildTargetGroup, ScriptingImplementation.Mono2x);
 					PlayerSettings.SetIl2CppCompilerConfiguration(buildTargetGroup, Il2CppCompilerConfiguration.Debug);
