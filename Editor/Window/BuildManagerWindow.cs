@@ -1,4 +1,4 @@
-﻿using System;
+﻿s using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
@@ -132,6 +132,7 @@ public class BuildManagerWindow : EditorWindow {
 	}
 
 	void DrawChangelogInfo() {
+		bool oldChangelogFoldoutValue = changelogFoldout;
 		changelogFoldout = EditorGUILayout.BeginFoldoutHeaderGroup(changelogFoldout, "Changelog");
 		EditorGUILayout.EndFoldoutHeaderGroup();
 	
@@ -238,7 +239,7 @@ public class BuildManagerWindow : EditorWindow {
 #endif
 		}
 
-		if (GUI.changed)
+		if (oldChangelogFoldoutValue != changelogFoldout)
 			ChangelogData.SaveChangelog(changelog);
 
 		if (changelogFoldout)
