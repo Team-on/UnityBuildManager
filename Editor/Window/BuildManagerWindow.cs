@@ -231,6 +231,10 @@ public class BuildManagerWindow : EditorWindow {
 
 			--EditorGUI.indentLevel;
 			EditorGUILayout.EndScrollView();
+		}
+
+		if (oldChangelogFoldoutValue != changelogFoldout) {
+			ChangelogData.SaveChangelog(changelog);
 
 #if GAME_TEMPLATE
 		TemplateGameManager.Instance.buildNameString = changelog.GetLastVersion().GetVersionHeader();;
@@ -238,9 +242,6 @@ public class BuildManagerWindow : EditorWindow {
 		EditorUtility.SetDirty(TemplateGameManager.Instance);
 #endif
 		}
-
-		if (oldChangelogFoldoutValue != changelogFoldout)
-			ChangelogData.SaveChangelog(changelog);
 
 		if (changelogFoldout)
 			EditorGUILayout.Space(20);
