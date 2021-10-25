@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using UnityEngine;
 using UnityEditor;
@@ -27,7 +26,7 @@ public class BuildManagerWindow : EditorWindow {
 	public static void ShowWindow() {
 		sequenceList = null;
 		buildList = null;
-		EditorWindow.GetWindow(typeof(BuildManagerWindow), false, "Builds", true);
+		GetWindow(typeof(BuildManagerWindow), false, "Builds", true);
 
 		LoadSettings();
 	}

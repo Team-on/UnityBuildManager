@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections.Generic;
 using UnityEditor;
 
 public static class PredefinedBuildConfigs {
@@ -13,19 +11,19 @@ public static class PredefinedBuildConfigs {
 
 	public static BuildSequence passbySequence;
 
-	public static BuildData[] standaloneData = new BuildData[] { 
-		new BuildData(UnityEditor.BuildTargetGroup.Standalone, UnityEditor.BuildTarget.StandaloneWindows){ itchChannel = "windows-32" },
-		new BuildData(UnityEditor.BuildTargetGroup.Standalone, UnityEditor.BuildTarget.StandaloneWindows64){ itchChannel = "windows-64" },
-		new BuildData(UnityEditor.BuildTargetGroup.Standalone, UnityEditor.BuildTarget.StandaloneLinux64){ itchChannel = "linux-universal" },
-		new BuildData(UnityEditor.BuildTargetGroup.Standalone, UnityEditor.BuildTarget.StandaloneOSX){ itchChannel = "osx-universal" },
+	public static BuildData[] standaloneData = new BuildData[] {
+		new BuildData(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows){ itchChannel = "windows-32" },
+		new BuildData(BuildTargetGroup.Standalone, BuildTarget.StandaloneWindows64){ itchChannel = "windows-64" },
+		new BuildData(BuildTargetGroup.Standalone, BuildTarget.StandaloneLinux64){ itchChannel = "linux-universal" },
+		new BuildData(BuildTargetGroup.Standalone, BuildTarget.StandaloneOSX){ itchChannel = "osx-universal" },
 	};
 
 	public static BuildData[] webData = new BuildData[] {
-		new BuildData(UnityEditor.BuildTargetGroup.WebGL, UnityEditor.BuildTarget.WebGL){ middlePath = "$NAME_$VERSION_$PLATFORM/", itchChannel = "webgl"},
+		new BuildData(BuildTargetGroup.WebGL, BuildTarget.WebGL){ middlePath = "$NAME_$VERSION_$PLATFORM/", itchChannel = "webgl"},
 	};
 
 	public static BuildData[] androidData = new BuildData[] {
-		new BuildData(UnityEditor.BuildTargetGroup.Android, UnityEditor.BuildTarget.Android){ middlePath = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", dirPathForPostProcess = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", itchChannel = "android"},
+		new BuildData(BuildTargetGroup.Android, BuildTarget.Android){ middlePath = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", dirPathForPostProcess = "$NAME_$VERSION_$PLATFORM$EXECUTABLE", itchChannel = "android"},
 	};
 
 	public static void Init() {
